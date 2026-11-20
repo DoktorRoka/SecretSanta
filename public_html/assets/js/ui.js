@@ -2,6 +2,8 @@
  * DOM-хелперы. Пользовательские данные выводятся только через textContent/append.
  */
 
+import { icon } from './icons.js';
+
 let fieldCounter = 0;
 
 export function el(tag, props = {}, children = []) {
@@ -227,7 +229,10 @@ export function pageHeader(title, subtitle, backHash) {
     const header = el('header', { class: 'page-header' });
     if (backHash) {
         header.append(
-            el('a', { class: 'back-link', href: backHash, text: '← Назад' }),
+            el('a', { class: 'back-link', href: backHash }, [
+                icon('arrowLeft'),
+                el('span', { text: 'Назад' }),
+            ]),
         );
     }
     header.append(el('h1', { class: 'page-title', text: title }));
@@ -257,8 +262,7 @@ export function openModal(options) {
         class: 'modal-close',
         type: 'button',
         'aria-label': 'Закрыть',
-        text: '✕',
-    });
+    }, [icon('close')]);
     const dialog = el('div', {
         class: 'modal',
         role: 'dialog',
@@ -459,10 +463,24 @@ export function formatDate(value) {
 
 export function startSnow() {
     const host = document.getElementById('snow');
-    if (!host) {
+    const bubbles = document.getElementById('bubbles');
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
         return;
     }
-    for (let index = 1; index <= 14; index++) {
-        host.append(el('span', { class: 'snowflake s' + String(index), 'aria-hidden': 'true' }));
+    if (host) {
+        const stars = { 3: true, 7: true, 12: true };
+        for (let index = 1; index <= 14; index++) {
+            const classes = ['snowflake', 's' + String(index)];
+            if (stars[index]) {
+                classes.push('snowflake--star');
+            }
+            host.append(el('span', { class: classes.join(' '), 'aria-hidden': 'true' }));
+        }
+    }
+    if (bubbles) {
+        for (let index = 1; index <= 8; index++) {
+            bubbles.append(el('span', { class: 'bubble b' + String(index), 'aria-hidden': 'true' }));
+        }
     }
 }

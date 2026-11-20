@@ -174,11 +174,11 @@ function roomRow(view, room) {
     );
 
     return el('tr', {}, [
-        el('td', {}, [el('span', { class: 'code-pill', text: room.code })]),
-        el('td', { text: room.type === 'student' ? 'Студенты' : 'Преподаватели' }),
-        el('td', {}, [statusCell(room.status)]),
-        el('td', { class: 'num', text: String(room.participants_count) }),
-        el('td', { class: 'nowrap', text: formatDate(room.created_at) }),
+        el('td', { 'data-label': 'Код' }, [el('span', { class: 'code-pill', text: room.code })]),
+        el('td', { 'data-label': 'Тип', text: room.type === 'student' ? 'Студенты' : 'Преподаватели' }),
+        el('td', { 'data-label': 'Статус' }, [statusCell(room.status)]),
+        el('td', { 'data-label': 'Участники', class: 'num', text: String(room.participants_count) }),
+        el('td', { 'data-label': 'Создана', class: 'nowrap', text: formatDate(room.created_at) }),
         el('td', {}, [actions]),
     ]);
 }
@@ -249,6 +249,7 @@ async function renderPanel(view) {
 
     actions.append(refresh, el('button', { class: 'btn btn-ghost', type: 'button', text: 'Выйти', onClick: logout }));
 
+    view.replaceChildren();
     view.append(
         pageHeader('Суперадминистратор', 'Комнат: ' + String(data.rooms.length)),
         roomsTable(view, data.rooms),

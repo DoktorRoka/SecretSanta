@@ -17,6 +17,7 @@ import {
     typedConfirm,
 } from '../ui.js';
 import { validateCode, validateRequired } from '../validators.js';
+import { icon } from '../icons.js';
 
 async function logout() {
     try {
@@ -212,8 +213,7 @@ async function renderPanel(view) {
     const drawButton = el('button', {
         class: 'btn btn-primary btn-block',
         type: 'button',
-        text: '🎲 Провести жеребьёвку',
-    });
+    }, [icon('dice'), el('span', { text: 'Провести жеребьёвку' })]);
     drawButton.disabled = !canDraw;
     drawButton.addEventListener('click', () => drawModal(view, room));
 
@@ -235,6 +235,7 @@ async function renderPanel(view) {
     refresh.addEventListener('click', () => renderPanel(view));
     actions.append(refresh, el('button', { class: 'btn btn-ghost', type: 'button', text: 'Выйти', onClick: logout }));
 
+    view.replaceChildren();
     view.append(
         pageHeader('Панель организатора', 'Комната ' + room.code),
         el('div', { class: 'card stack' }, [

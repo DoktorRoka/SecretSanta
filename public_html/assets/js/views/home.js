@@ -1,8 +1,9 @@
 import { el } from '../ui.js';
+import { icon } from '../icons.js';
 
-function choiceCard(href, emoji, title, subtitle) {
+function choiceCard(href, iconName, title, subtitle) {
     return el('a', { class: 'choice-card', href }, [
-        el('span', { class: 'choice-emoji', 'aria-hidden': 'true', text: emoji }),
+        el('span', { class: 'choice-icon', 'aria-hidden': 'true' }, [icon(iconName)]),
         el('span', { class: 'choice-title', text: title }),
         el('span', { class: 'choice-sub', text: subtitle }),
     ]);
@@ -11,7 +12,10 @@ function choiceCard(href, emoji, title, subtitle) {
 export default function homeView(view) {
     view.append(
         el('header', { class: 'hero' }, [
-            el('p', { class: 'kicker', text: '🎄 Тайный Санта' }),
+            el('p', { class: 'kicker' }, [
+                icon('tree'),
+                el('span', { text: 'Тайный Санта' }),
+            ]),
             el('h1', { class: 'hero-title', text: 'Подарите праздник коллеге или одногруппнику' }),
             el('p', {
                 class: 'lead',
@@ -19,8 +23,8 @@ export default function homeView(view) {
             }),
         ]),
         el('div', { class: 'choice-grid' }, [
-            choiceCard('#/role/student', '🎓', 'Я студент', 'Комната для группы'),
-            choiceCard('#/role/teacher', '👩‍🏫', 'Я преподаватель', 'Комната для кафедры'),
+            choiceCard('#/role/student', 'cap', 'Я студент', 'Комната для группы'),
+            choiceCard('#/role/teacher', 'board', 'Я преподаватель', 'Комната для кафедры'),
         ]),
         el('p', { class: 'center' }, [
             el('a', { class: 'text-link', href: '#/login', text: 'Уже участвую — войти' }),

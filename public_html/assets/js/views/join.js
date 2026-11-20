@@ -14,17 +14,18 @@ import {
 } from '../ui.js';
 import { buildProfileSection, markProfileErrors, readProfile } from './profile.js';
 import { validateCode, validateProfile } from '../validators.js';
+import { icon } from '../icons.js';
 
 function rolePrompt(view) {
     view.append(
         pageHeader('Присоединиться', 'Сначала выберите свою роль.', '#/home'),
         el('div', { class: 'choice-grid' }, [
             el('a', { class: 'choice-card', href: '#/role/student' }, [
-                el('span', { class: 'choice-emoji', 'aria-hidden': 'true', text: '🎓' }),
+                el('span', { class: 'choice-icon', 'aria-hidden': 'true' }, [icon('cap')]),
                 el('span', { class: 'choice-title', text: 'Я студент' }),
             ]),
             el('a', { class: 'choice-card', href: '#/role/teacher' }, [
-                el('span', { class: 'choice-emoji', 'aria-hidden': 'true', text: '👩‍🏫' }),
+                el('span', { class: 'choice-icon', 'aria-hidden': 'true' }, [icon('board')]),
                 el('span', { class: 'choice-title', text: 'Я преподаватель' }),
             ]),
         ]),
@@ -115,9 +116,8 @@ function stepTwo(view) {
     const back = el('button', {
         class: 'link-btn',
         type: 'button',
-        text: '← Изменить код',
         onClick: () => stepOne(view),
-    });
+    }, [icon('arrowLeft'), el('span', { text: 'Изменить код' })]);
 
     const allInputs = { ...profile.inputs, consent: consent.input };
     consent.input.name = 'consent';

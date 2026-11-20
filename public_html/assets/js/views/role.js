@@ -1,14 +1,15 @@
 import { state } from '../api.js';
 import { el, pageHeader } from '../ui.js';
+import { icon } from '../icons.js';
 
-function actionCard(href, emoji, title, subtitle, primary = false) {
+function actionCard(href, iconName, title, subtitle, primary = false) {
     return el('a', { class: 'action-card' + (primary ? ' action-card-primary' : ''), href }, [
-        el('span', { class: 'action-emoji', 'aria-hidden': 'true', text: emoji }),
+        el('span', { class: 'action-icon', 'aria-hidden': 'true' }, [icon(iconName)]),
         el('span', { class: 'action-text' }, [
             el('span', { class: 'action-title', text: title }),
             el('span', { class: 'action-sub', text: subtitle }),
         ]),
-        el('span', { class: 'action-arrow', 'aria-hidden': 'true', text: '→' }),
+        icon('arrowRight', 'action-arrow'),
     ]);
 }
 
@@ -30,9 +31,9 @@ export default function roleView(view, params) {
     view.append(
         pageHeader(label, 'Код комнаты вам сообщает организатор.', '#/home'),
         el('div', { class: 'stack' }, [
-            actionCard('#/join', '🔑', 'Присоединиться по коду', 'Если организатор уже прислал код комнаты', true),
-            actionCard('#/create', '🎁', 'Создать свою комнату', 'Вы станете организатором и сразу заполните анкету'),
-            actionCard('#/login', '🚪', 'Войти в кабинет', 'Если вы уже зарегистрировались'),
+            actionCard('#/join', 'key', 'Присоединиться по коду', 'Если организатор уже прислал код комнаты', true),
+            actionCard('#/create', 'gift', 'Создать свою комнату', 'Вы станете организатором и сразу заполните анкету'),
+            actionCard('#/login', 'door', 'Войти в кабинет', 'Если вы уже зарегистрировались'),
         ]),
         el('p', { class: 'hint center', text: 'Комната для студентов не примет преподавателя и наоборот.' }),
     );

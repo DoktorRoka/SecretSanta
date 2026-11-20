@@ -16,17 +16,18 @@ import {
 } from '../ui.js';
 import { buildProfileSection, markProfileErrors, readProfile } from './profile.js';
 import { validateCode, validatePassword, validateProfile } from '../validators.js';
+import { icon } from '../icons.js';
 
 function rolePrompt(view) {
     view.append(
         pageHeader('Создать комнату', 'Сначала выберите, для кого комната.', '#/home'),
         el('div', { class: 'choice-grid' }, [
             el('a', { class: 'choice-card', href: '#/role/student' }, [
-                el('span', { class: 'choice-emoji', 'aria-hidden': 'true', text: '🎓' }),
+                el('span', { class: 'choice-icon', 'aria-hidden': 'true' }, [icon('cap')]),
                 el('span', { class: 'choice-title', text: 'Для студентов' }),
             ]),
             el('a', { class: 'choice-card', href: '#/role/teacher' }, [
-                el('span', { class: 'choice-emoji', 'aria-hidden': 'true', text: '👩‍🏫' }),
+                el('span', { class: 'choice-icon', 'aria-hidden': 'true' }, [icon('board')]),
                 el('span', { class: 'choice-title', text: 'Для преподавателей' }),
             ]),
         ]),
