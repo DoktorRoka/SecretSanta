@@ -1,2 +1,10 @@
 STYLE.md
 /TASK/
+
+# Секреты и данные не попадают в репозиторий
+/public_html/config.php
+/public_html/data/santa.sqlite
+/public_html/data/santa.sqlite-wal
+/public_html/data/santa.sqlite-shm
+/public_html/data/sessions/
+/public_html/data/error.log
