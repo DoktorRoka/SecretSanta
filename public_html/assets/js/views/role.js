@@ -1,6 +1,7 @@
 import { state } from '../api.js';
 import { el, pageHeader } from '../ui.js';
 import { icon } from '../icons.js';
+import { helpButton } from '../help.js';
 
 function actionCard(href, iconName, title, subtitle, primary = false) {
     return el('a', { class: 'action-card' + (primary ? ' action-card-primary' : ''), href }, [
@@ -36,5 +37,6 @@ export default function roleView(view, params) {
             actionCard('#/login', 'door', 'Войти в кабинет', 'Если вы уже зарегистрировались'),
         ]),
         el('p', { class: 'hint center', text: 'Комната для студентов не примет преподавателя и наоборот.' }),
+        el('div', { class: 'help-row' }, [helpButton('Как это работает')]),
     );
 }

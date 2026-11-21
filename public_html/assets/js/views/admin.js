@@ -18,6 +18,7 @@ import {
 } from '../ui.js';
 import { validateCode, validateRequired } from '../validators.js';
 import { icon } from '../icons.js';
+import { helpButton } from '../help.js';
 
 async function logout() {
     try {
@@ -46,6 +47,7 @@ function loginScreen(view) {
     const password = passwordField('Пароль организатора', {
         name: 'password',
         autocomplete: 'current-password',
+        hint: 'Это пароль для панели, который вы задали при создании комнаты. Не пароль участника для кабинета.',
     });
     const errorNode = formError();
     const submit = el('button', { class: 'btn btn-primary', type: 'submit', text: 'Войти как организатор' });
@@ -99,7 +101,8 @@ function loginScreen(view) {
     view.append(
         pageHeader('Панель организатора', 'Введите код комнаты и пароль, который задали при создании.', '#/home'),
         el('div', { class: 'card' }, [form]),
-        el('p', { class: 'hint center', text: 'Забыли пароль? Обратитесь к суперадминистратору мероприятия.' }),
+        el('div', { class: 'help-row' }, [helpButton('Какой пароль вводить?', 'btn btn-ghost btn-small')]),
+        el('p', { class: 'hint center', text: 'Забыли пароль организатора? Его сбросит суперадминистратор мероприятия.' }),
     );
 }
 

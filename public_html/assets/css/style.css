@@ -498,6 +498,24 @@ select {
     margin-top: 1.2rem;
 }
 
+.help-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+}
+
+.help-row-start {
+    justify-content: flex-start;
+    margin-top: 0.3rem;
+}
+
+.help-row .btn,
+.help-row .link-btn {
+    margin-top: 0;
+}
+
 .action-card {
     display: flex;
     align-items: center;
@@ -960,6 +978,22 @@ textarea:focus-visible,
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
     font-size: 0.88rem;
     line-height: 1.4;
+}
+
+.info-note {
+    margin: 0 0 0.9rem;
+    padding: 0.7rem 0.85rem;
+    color: #0b4c78;
+    background: linear-gradient(180deg, rgba(222, 243, 253, 0.94), rgba(191, 227, 247, 0.86));
+    border: 1px solid rgba(31, 134, 201, 0.45);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+.info-note strong {
+    color: var(--ink);
 }
 
 .recipient-name {

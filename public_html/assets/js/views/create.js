@@ -17,6 +17,7 @@ import {
 import { buildProfileSection, markProfileErrors, readProfile } from './profile.js';
 import { validateCode, validatePassword, validateProfile } from '../validators.js';
 import { icon } from '../icons.js';
+import { helpButton } from '../help.js';
 
 function rolePrompt(view) {
     view.append(
@@ -84,7 +85,7 @@ export default function createView(view) {
     const adminPassword = passwordField('Пароль организатора', {
         name: 'admin_password',
         autocomplete: 'new-password',
-        hint: 'Не короче 8 символов. Нужен для панели организатора.',
+        hint: 'От 8 символов. Пароль для панели комнаты (код + этот пароль). Участникам его не сообщайте.',
     });
     const adminConfirm = passwordField('Пароль организатора ещё раз', {
         name: 'admin_password_confirm',
@@ -118,6 +119,16 @@ export default function createView(view) {
         }),
         adminPassword.field,
         adminConfirm.field,
+        el('p', { class: 'info-note' }, [
+            'Здесь два разных пароля. ',
+            el('strong', { text: 'Пароль организатора' }),
+            ' открывает панель комнаты. ',
+            el('strong', { text: 'Пароль для входа' }),
+            ' — личный, для вашего кабинета участника; вы зададите его ниже, в анкете.',
+        ]),
+        el('div', { class: 'help-row help-row-start' }, [
+            helpButton('Подробнее о паролях', 'link-btn'),
+        ]),
         profile.section,
         consent.field,
         errorNode,

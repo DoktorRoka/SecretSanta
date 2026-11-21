@@ -15,6 +15,7 @@ import {
 import { buildProfileSection, markProfileErrors, readProfile } from './profile.js';
 import { validateCode, validateProfile } from '../validators.js';
 import { icon } from '../icons.js';
+import { helpButton } from '../help.js';
 
 function rolePrompt(view) {
     view.append(
@@ -97,6 +98,7 @@ function stepOne(view) {
     view.append(
         pageHeader('Присоединиться', 'Введите код комнаты, который прислал организатор.', '#/role/' + state.role),
         el('div', { class: 'card' }, [form]),
+        el('div', { class: 'help-row' }, [helpButton('Как это работает')]),
     );
 }
 

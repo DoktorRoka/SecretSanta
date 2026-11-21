@@ -81,7 +81,7 @@ export function buildProfileSection(role, options = {}) {
         const password = passwordField('Пароль для входа', {
             name: 'password',
             autocomplete: 'new-password',
-            hint: '4–72 символа. Придумайте свой пароль — он понадобится для входа в кабинет.',
+            hint: 'От 4 символов. Личный пароль для входа в кабинет: код комнаты + контакт + этот пароль.',
         });
         inputs.password = password.input;
         children.push(password.field);

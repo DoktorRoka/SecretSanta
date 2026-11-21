@@ -83,6 +83,13 @@ const ICONS = {
             { t: 'path', class: 'ic-line', d: 'M17.5 6.5 6.5 17.5' },
         ],
     },
+    info: {
+        parts: [
+            { t: 'circle', class: 'ic-line', cx: '12', cy: '12', r: '8.8' },
+            { t: 'path', class: 'ic-line', d: 'M12 10.9v5.4' },
+            { t: 'circle', class: 'ic-pip', cx: '12', cy: '7.6', r: '1.15' },
+        ],
+    },
     arrowLeft: {
         parts: [
             { t: 'path', class: 'ic-line', d: 'M19 12H5' },

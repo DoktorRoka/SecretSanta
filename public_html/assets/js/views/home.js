@@ -1,5 +1,6 @@
 import { el } from '../ui.js';
 import { icon } from '../icons.js';
+import { helpButton } from '../help.js';
 
 function choiceCard(href, iconName, title, subtitle) {
     return el('a', { class: 'choice-card', href }, [
@@ -29,6 +30,7 @@ export default function homeView(view) {
         el('p', { class: 'center' }, [
             el('a', { class: 'text-link', href: '#/login', text: 'Уже участвую — войти' }),
         ]),
+        el('div', { class: 'help-row' }, [helpButton('Как это работает')]),
         el('footer', { class: 'page-footer' }, [
             el('a', { class: 'muted-link', href: '#/admin', text: 'Я организатор' }),
         ]),
