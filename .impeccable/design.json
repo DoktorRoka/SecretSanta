@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-21T12:00:00.000Z",
+  "title": "Design System: Тайный Санта",
+  "extensions": {
+    "colorMeta": {
+      "desk": {
+        "role": "neutral",
+        "displayName": "Desk",
+        "canonical": "oklch(21% 0.035 250)",
+        "tonalRamp": [
+          "oklch(18% 0.030 250)",
+          "oklch(24% 0.040 250)",
+          "oklch(31% 0.045 250)",
+          "oklch(40% 0.050 250)",
+          "oklch(52% 0.050 250)",
+          "oklch(65% 0.045 250)",
+          "oklch(79% 0.030 250)",
+          "oklch(93% 0.015 250)"
+        ]
+      },
+      "stock": {
+        "role": "neutral",
+        "displayName": "Letter Stock",
+        "canonical": "oklch(28% 0.040 250)",
+        "tonalRamp": [
+          "oklch(19% 0.030 250)",
+          "oklch(25% 0.040 250)",
+          "oklch(28% 0.040 250)",
+          "oklch(36% 0.045 250)",
+          "oklch(48% 0.045 250)",
+          "oklch(61% 0.040 250)",
+          "oklch(76% 0.025 250)",
+          "oklch(92% 0.012 250)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(97% 0.007 240)",
+        "tonalRamp": [
+          "oklch(20% 0.020 240)",
+          "oklch(30% 0.025 240)",
+          "oklch(42% 0.025 240)",
+          "oklch(54% 0.020 240)",
+          "oklch(66% 0.015 240)",
+          "oklch(78% 0.010 240)",
+          "oklch(89% 0.008 240)",
+          "oklch(97% 0.007 240)"
+        ]
+      },
+      "wax": {
+        "role": "primary",
+        "displayName": "Wax Seal",
+        "canonical": "oklch(63% 0.200 20)",
+        "tonalRamp": [
+          "oklch(22% 0.100 20)",
+          "oklch(30% 0.140 20)",
+          "oklch(40% 0.180 20)",
+          "oklch(50% 0.200 20)",
+          "oklch(63% 0.200 20)",
+          "oklch(75% 0.150 20)",
+          "oklch(86% 0.090 20)",
+          "oklch(95% 0.030 20)"
+        ]
+      },
+      "gold": {
+        "role": "tertiary",
+        "displayName": "Gilt",
+        "canonical": "oklch(81% 0.140 85)",
+        "tonalRamp": [
+          "oklch(25% 0.060 85)",
+          "oklch(34% 0.080 85)",
+          "oklch(45% 0.100 85)",
+          "oklch(56% 0.120 85)",
+          "oklch(68% 0.140 85)",
+          "oklch(81% 0.140 85)",
+          "oklch(90% 0.090 85)",
+          "oklch(96% 0.040 85)"
+        ]
+      },
+      "evergreen": {
+        "role": "secondary",
+        "displayName": "Evergreen",
+        "canonical": "oklch(64% 0.120 165)",
+        "tonalRamp": [
+          "oklch(22% 0.050 165)",
+          "oklch(31% 0.070 165)",
+          "oklch(42% 0.100 165)",
+          "oklch(53% 0.115 165)",
+          "oklch(64% 0.120 165)",
+          "oklch(75% 0.100 165)",
+          "oklch(86% 0.060 165)",
+          "oklch(95% 0.025 165)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Letterhead",
+        "purpose": "Имя продукта и заголовки экранов антиквой."
+      },
+      "subhead": {
+        "displayName": "Promise",
+        "purpose": "Вторая строка шапки и ремарки разделов."
+      },
+      "body": {
+        "displayName": "Working Text",
+        "purpose": "Рабочий текст, поля и подсказки."
+      },
+      "label": {
+        "displayName": "Form Caps",
+        "purpose": "Подписи полей, штампы, головы таблиц."
+      },
+      "mono": {
+        "displayName": "Machine",
+        "purpose": "Коды комнат, контакты, числовые значения."
+      }
+    },
+    "shadows": [
+      {
+        "name": "seal-press",
+        "value": "0 2px 5px rgba(4, 12, 22, 0.55)",
+        "purpose": "Короткая тень под сургучной печатью."
+      },
+      {
+        "name": "postcard-lift",
+        "value": "0 14px 26px -20px rgba(2, 8, 16, 0.95)",
+        "purpose": "Открытка лежит на ночном столе."
+      },
+      {
+        "name": "modal-lift",
+        "value": "0 24px 60px -24px rgba(2, 8, 16, 0.92)",
+        "purpose": "Модальное окно над затемнённым столом."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-seal",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Постановка печати и вход карточек-конвертов."
+      },
+      {
+        "name": "state",
+        "value": "0.15s ease",
+        "purpose": "Наведение, фокус и смена цвета линейки."
+      }
+    ],
+    "breakpoints": [
+      { "name": "choice-split", "value": "440px" },
+      { "name": "modal-center", "value": "600px" },
+      { "name": "table-cards", "value": "640px" },
+      { "name": "letter-wide", "value": "760px" },
+      { "name": "ledger-breakout", "value": "900px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Основное действие экрана: оттиск сургуча, одна на экран.",
+      "html": "<button class=\"ds-btn-primary\">Сохранить изменения</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 46px; padding: 0.65rem 1.15rem; border: 1px solid transparent; border-radius: 2px; background: var(--wax-deep, #b32740); color: #fff; font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; font-size: 0.98rem; font-weight: 700; line-height: 1.3; cursor: pointer; transition: background-color 0.15s ease, transform 0.12s ease; } .ds-btn-primary:hover { background: var(--wax-hover, #c93148); } .ds-btn-primary:focus-visible { outline: 2px solid var(--gold, #f2c14e); outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Подчинённое действие на бумаге; при наведении рамка становится золотой.",
+      "html": "<button class=\"ds-btn-secondary\">Открыть ссылку</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 46px; padding: 0.65rem 1.15rem; border: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 2px; background: var(--stock-raised, #1b2f49); color: var(--ink, #f4f7fb); font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; font-size: 0.98rem; font-weight: 700; line-height: 1.3; text-decoration: none; cursor: pointer; transition: background-color 0.15s ease, border-color 0.15s ease; } .ds-btn-secondary:hover { background: var(--stock-high, #22374f); border-color: var(--gold, #f2c14e); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--gold, #f2c14e); outline-offset: 2px; }"
+    },
+    {
+      "name": "Line Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Поле анкеты: строка с одной нижней линейкой, фокус золотом.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Код комнаты</span><input class=\"ds-input\" type=\"text\" placeholder=\"K7M2Q9\"></label>",
+      "css": ".ds-field { display: grid; gap: 0.3rem; font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; } .ds-field-label { color: var(--ink-faint, #8fa5bc); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; } .ds-input { width: 100%; min-height: 48px; padding: 0.65rem 0.1rem; border: 0; border-bottom: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 0; background: transparent; color: var(--ink, #f4f7fb); font: inherit; font-size: 1rem; line-height: 1.35; transition: border-color 0.15s ease, box-shadow 0.15s ease; } .ds-input::placeholder { color: var(--ink-faint, #8fa5bc); } .ds-input:focus { outline: none; border-bottom-color: var(--gold, #f2c14e); box-shadow: 0 1px 0 0 var(--gold, #f2c14e); }"
+    },
+    {
+      "name": "Letter Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Базовый лист бумаги: непрозрачная поверхность, волосяная рамка, 2px.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-card-title\">Жеребьёвка проведена</p><p class=\"ds-card-text\">Регистрация и правка анкет закрыты. Получатель уже виден в кабинете.</p></div>",
+      "css": ".ds-card { padding: 1.15rem; border: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 2px; background: var(--stock, #16263d); color: var(--ink, #f4f7fb); font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; } .ds-card-title { margin: 0 0 0.35rem; font-family: \"Iowan Old Style\", Palatino, Georgia, serif; font-size: 1.2rem; font-weight: 600; color: var(--ink, #f4f7fb); } .ds-card-text { margin: 0; color: var(--ink-dim, #b9c9db); font-size: 0.9rem; line-height: 1.55; }"
+    },
+    {
+      "name": "Envelope Choice Card",
+      "kind": "custom",
+      "refersTo": "choice-card",
+      "description": "Подпись мира: конверт с клапаном и сургучной печатью для выбора комнаты.",
+      "html": "<a class=\"ds-envelope\" href=\"#/role/student\"><span class=\"ds-envelope-seal\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" width=\"23\" height=\"23\"><path fill=\"#fff\" d=\"M12 3 1.6 8.1 12 13.2l10.4-5.1z\"/><path fill=\"rgba(14,26,43,.62)\" d=\"M6.3 10.9v3.9c0 1.6 2.6 2.9 5.7 2.9s5.7-1.3 5.7-2.9v-3.9L12 13.6z\"/></svg></span><span class=\"ds-envelope-title\">Я студент</span><span class=\"ds-envelope-sub\">Комната для группы</span></a>",
+      "css": ".ds-envelope { position: relative; display: block; overflow: hidden; padding: 3.4rem 1.1rem 1.15rem; border: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 2px; background: var(--stock, #16263d); color: var(--ink, #f4f7fb); text-align: center; text-decoration: none; font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; transition: border-color 0.15s ease, background-color 0.15s ease; } .ds-envelope::before { content: \"\"; position: absolute; inset: 0 0 auto; height: 40px; background: var(--stock-high, #22374f); border-bottom: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); clip-path: polygon(0 0, 100% 0, 50% 100%); } .ds-envelope:hover { border-color: var(--gold, #f2c14e); background: var(--stock-raised, #1b2f49); } .ds-envelope:focus-visible { outline: 2px solid var(--gold, #f2c14e); outline-offset: 2px; } .ds-envelope-seal { position: absolute; top: 14px; left: 50%; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 47% 53% 51% 49% / 52% 47% 54% 48%; background: var(--wax, #e5384f); box-shadow: inset 0 0 0 2px rgba(143, 26, 43, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 2px 5px rgba(4, 12, 22, 0.55); transform: translateX(-50%); } .ds-envelope-title { display: block; font-family: \"Iowan Old Style\", Palatino, Georgia, serif; font-size: 1.2rem; font-weight: 600; } .ds-envelope-sub { display: block; margin-top: 0.15rem; color: var(--ink-dim, #b9c9db); font-size: 0.86rem; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Штамп состояния: капитель в прямоугольной рамке, без заливки.",
+      "html": "<span class=\"ds-badge ds-badge-success\">Анкета заполнена</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.22rem 0.55rem; border: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 2px; background: transparent; color: var(--ink-dim, #b9c9db); font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; white-space: nowrap; } .ds-badge-success { color: #8ff0c4; border-color: rgba(47, 163, 122, 0.7); background: rgba(47, 163, 122, 0.16); }"
+    },
+    {
+      "name": "Help Modal",
+      "kind": "custom",
+      "refersTo": "modal",
+      "description": "Подсказка «Как это работает»: лист бумаги над затемнённым столом.",
+      "html": "<div class=\"ds-modal\"><div class=\"ds-modal-head\"><h2 class=\"ds-modal-title\">Как это работает</h2><button class=\"ds-modal-close\" type=\"button\" aria-label=\"Закрыть\">×</button></div><p class=\"ds-modal-lead\">В комнате два разных пароля. Они открывают разные вещи — не перепутайте.</p><div class=\"ds-modal-actions\"><button class=\"ds-btn-primary\" type=\"button\">Понятно</button></div></div>",
+      "css": ".ds-modal { width: 100%; max-width: 480px; padding: 1.15rem; border: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 2px; background: var(--stock, #16263d); color: var(--ink, #f4f7fb); box-shadow: 0 24px 60px -24px rgba(2, 8, 16, 0.92); font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Arial, sans-serif; } .ds-modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; } .ds-modal-title { margin: 0 0 0.6rem; font-family: \"Iowan Old Style\", Palatino, Georgia, serif; font-size: 1.24rem; font-weight: 600; } .ds-modal-close { min-width: 44px; min-height: 44px; border: 1px solid var(--rule-strong, rgba(244, 247, 251, 0.34)); border-radius: 2px; background: var(--stock-raised, #1b2f49); color: var(--ink-dim, #b9c9db); font-size: 1rem; cursor: pointer; } .ds-modal-close:hover { border-color: var(--gold, #f2c14e); color: var(--ink, #f4f7fb); } .ds-modal-lead { margin: 0; color: var(--ink-dim, #b9c9db); line-height: 1.55; } .ds-modal-actions { display: flex; justify-content: flex-end; margin-top: 1rem; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Письмо от кафедры",
+    "overview": "Сайт — одно письмо от кафедры, а не панель управления. Тёмный стол, плотная бумага, линейки в один пиксель и красный сургуч. Всё, что раньше делали стекло, градиенты и мягкие тени на каждой карточке, здесь делает тон: поверхность на полтона светлее фона, волосяная рамка, антиква на бланке и сургуч как единственное насыщенное пятно. Интерфейс должен выглядеть как бумага, которую положили на стол и запечатали: адресная строка в шапке, анкета с полями-линиями, штампы состояния, печать на клапане конверта.",
+    "keyCharacteristics": [
+      "Ночной стол #0E1A2B и поверхности #16263D; глубина — перепадом тона и линейкой, не тенью.",
+      "Антиква для шапки и заголовков; нейтральный sans для кнопок, полей и рабочего текста; моноширинный — только коды и контакты.",
+      "Карточка-конверт с клапаном и сургучной печатью — главный объект главной страницы.",
+      "Поля-строки с одной нижней линейкой; подписи полей капителью с разрядкой.",
+      "Штампы состояния — прямоугольные, в рамке, без заливки.",
+      "Открытка с зимней сценкой лежит на столе как почтовая марка с перфорацией.",
+      "Ноль внешних ресурсов: системные шрифты, inline SVG, CSS-декор."
+    ],
+    "rules": [
+      { "name": "The Paper Not Glass Rule", "body": "Никакого стекла, блюра и полупрозрачных панелей: поверхность непрозрачна, край обозначен линейкой, а не свечением.", "section": "overview" },
+      { "name": "The One Accent Rule", "body": "На экране одно насыщенное пятно — сургуч. Золото работает ссылками и фокусом, хвоя — успехом, но не конкурируют с печатью.", "section": "colors" },
+      { "name": "The Ink on Stock Rule", "body": "Вторичный текст — не серый, а чернила, ослабленные к цвету бумаги; на цветной плашке текст тонируется её оттенком, а не усредняется.", "section": "colors" },
+      { "name": "The Single Seal Rule", "body": "Красная заливка площади больше кнопки — только у сургуча и опасных действий; всё остальное состояние показывается рамкой, тоном и штампом.", "section": "colors" },
+      { "name": "The Two Voices Rule", "body": "Заголовок и рабочая строка не меняются местами: антиква никогда не набирает кнопки и поля, sans никогда не набирает заголовок экрана.", "section": "typography" },
+      { "name": "The Caps Are Labels Rule", "body": "Капитель с разрядкой — признак поля, штампа или колонки таблицы. Над заголовком такой подписи нет: заголовок несёт себя сам.", "section": "typography" },
+      { "name": "The One Column Rule", "body": "Письмо не расползается на всю ширину: читаемая строка важнее использования монитора, а широкие данные выходят из колонки точечно.", "section": "layout" },
+      { "name": "The Inserted Ledger Rule", "body": "Только таблица и только на десктопе ломает колонку; формы, карточки и кнопки остаются в пределах письма.", "section": "layout" },
+      { "name": "The Hairline Rule", "body": "Любой край — 1 px; у активного состояния линейка меняет цвет на золото, но не толщину.", "section": "elevation" },
+      { "name": "The Pressed Seal Rule", "body": "Печать не «парит»: у неё внутреннее кольцо и короткая тень, как у оттиска, вдавленного в бумагу.", "section": "elevation" },
+      { "name": "The Cut, Not Rounded Rule", "body": "Скругление не смягчает объект: конверт, марка и штамп должны читаться как вырезанные, а не как «карточки с радиусом 12».", "section": "shapes" },
+      { "name": "The Envelope Rule", "body": "Всё, что предлагает выбор комнаты или роль, показывается конвертом; всё, что сообщает результат, — штампом или письмом получателя.", "section": "components" }
+    ],
+    "dos": [
+      "Держать фон #0E1A2B, поверхности #16263D и сургуч #E5384F как основу.",
+      "Обозначать края линейкой 1 px и перепадом тона.",
+      "Набирать бланк системной антиквой, а форму — системным sans.",
+      "Оставлять одно насыщенное пятно на экран.",
+      "Рисовать иконки inline SVG в одном штрихе и весе.",
+      "Делать зоны нажатия ≥ 44 px и поля ≥ 16 px."
+    ],
+    "donts": [
+      "Не использовать стекло, блюр, градиентный текст и свечения.",
+      "Не ставить надзаголовок-«kicker» над заголовком.",
+      "Не добавлять жёсткие тени без размытия и полосы по краю блока.",
+      "Не использовать эмодзи, глифы вместо иконок, ракеты и искры.",
+      "Не подключать внешние шрифты, CDN и картинки.",
+      "Не заливать красным площади больше кнопки и не делать сургуч «декоративным»."
+    ]
+  }
+}
