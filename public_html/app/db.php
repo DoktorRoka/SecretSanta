@@ -74,6 +74,42 @@ function is_unique_violation(PDOException $e): bool
         || strpos($message, '1062') !== false;
 }
 
+/**
+ * Начинает транзакцию записи. Для SQLite — BEGIN IMMEDIATE: он сразу берёт
+ * блокировку записи, поэтому проверка ёмкости перед вставкой становится
+ * атомарной. Возвращает true, когда транзакция начата вручную через exec().
+ */
+function begin_write(PDO $db): bool
+{
+    if (strtolower((string)cfg('DB_DRIVER', 'sqlite')) === 'mysql') {
+        $db->beginTransaction();
+        return false;
+    }
+    $db->exec('BEGIN IMMEDIATE');
+    return true;
+}
+
+function commit_write(PDO $db, bool $manual): void
+{
+    if ($manual) {
+        $db->exec('COMMIT');
+    } else {
+        $db->commit();
+    }
+}
+
+function rollback_write(PDO $db, bool $manual): void
+{
+    try {
+        if ($manual) {
+            $db->exec('ROLLBACK');
+        } elseif ($db->inTransaction()) {
+            $db->rollBack();
+        }
+    } catch (Throwable $ignored) {
+    }
+}
+
 function room_participants_count(PDO $db, int $roomId): int
 {
     $stmt = $db->prepare('SELECT COUNT(*) FROM users WHERE room_id = :room');

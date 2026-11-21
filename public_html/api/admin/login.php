@@ -25,9 +25,9 @@ if ($code !== null) {
 
 $verified = password_verify($password, $room === false ? SANTA_DUMMY_HASH : (string)$room['admin_pass_hash']);
 if ($room === false || !$verified) {
-    rl_hit('admin_fail', $ident);
+    rl_hit_limited('admin_fail', $ident, 5, 900);
     if ($room === false) {
-        rl_hit('room_probe', $ip);
+        rl_hit_limited('room_probe', $ip, 15, 600);
     }
     fail(401, 'BAD_CREDENTIALS', 'Неверный код комнаты или пароль организатора');
 }

@@ -14,11 +14,11 @@ $stmt->execute([':code' => $code]);
 $room = $stmt->fetch();
 
 if ($room === false) {
-    rl_hit('room_probe', client_ip());
+    rl_hit_limited('room_probe', client_ip(), 15, 600);
     fail(404, 'ROOM_NOT_FOUND', 'Комната не найдена, проверьте код');
 }
 if ($room['status'] !== 'open') {
-    rl_hit('room_probe', client_ip());
+    rl_hit_limited('room_probe', client_ip(), 15, 600);
     fail(409, 'ROOM_CLOSED', 'Регистрация в этой комнате уже закрыта');
 }
 

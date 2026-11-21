@@ -12,8 +12,7 @@ if (!empty($data['website'])) {
     ok([]);
 }
 
-rl_check('room_create', client_ip(), 5, 3600);
-rl_hit('room_create', client_ip());
+rl_hit_limited('room_create', client_ip(), 5, 3600);
 
 $role = v_role($data);
 $code = v_code(v_string($data, 'code', 'code'));
@@ -22,13 +21,15 @@ $profile = v_profile(v_object($data, 'profile'), $role, true);
 v_consent($data);
 
 $db = db();
-$total = (int)$db->query('SELECT COUNT(*) FROM rooms')->fetchColumn();
-if ($total >= (int)cfg('MAX_ROOMS', 300)) {
-    fail(409, 'ROOM_LIMIT', 'Достигнут лимит комнат, попробуйте позже');
-}
-
+$manual = begin_write($db);
 try {
-    $db->beginTransaction();
+    // Проверка лимита под блокировкой записи, чтобы параллельные создания
+    // не обошли MAX_ROOMS.
+    $total = (int)$db->query('SELECT COUNT(*) FROM rooms')->fetchColumn();
+    if ($total >= (int)cfg('MAX_ROOMS', 300)) {
+        throw new ConflictException('ROOM_LIMIT', 'Достигнут лимит комнат, попробуйте позже');
+    }
+
     $stmt = $db->prepare('INSERT INTO rooms (code, type, admin_pass_hash) VALUES (:code, :type, :hash)');
     $stmt->execute([
         ':code' => $code,
@@ -49,14 +50,15 @@ try {
         ':hash' => password_hash($profile['password'], PASSWORD_DEFAULT),
     ]);
     $userId = (int)$db->lastInsertId();
-    $db->commit();
+    commit_write($db, $manual);
 } catch (PDOException $e) {
-    if ($db->inTransaction()) {
-        $db->rollBack();
-    }
+    rollback_write($db, $manual);
     if (is_unique_violation($e)) {
         fail(409, 'ROOM_EXISTS', 'Такой код уже занят, придумайте другой');
     }
+    throw $e;
+} catch (Throwable $e) {
+    rollback_write($db, $manual);
     throw $e;
 }
 

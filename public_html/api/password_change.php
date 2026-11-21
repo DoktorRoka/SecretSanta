@@ -26,7 +26,7 @@ if ($row === false) {
 $key = login_fail_key((string)$row['code'], (string)$row['login']);
 rl_check('login_fail', $key, 5, 900);
 if (!password_verify($oldPassword, (string)$row['pass_hash'])) {
-    rl_hit('login_fail', $key);
+    rl_hit_limited('login_fail', $key, 5, 900);
     v_fail('old_password', 'Неверный текущий пароль');
 }
 

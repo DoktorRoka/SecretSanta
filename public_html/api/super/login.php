@@ -18,7 +18,7 @@ $password = v_string($data, 'password', 'password');
 $ip = client_ip();
 rl_check('super_fail', $ip, 5, 900);
 if (!password_verify($password, $hash)) {
-    rl_hit('super_fail', $ip);
+    rl_hit_limited('super_fail', $ip, 5, 900);
     fail(401, 'BAD_CREDENTIALS', 'Неверный пароль суперадминистратора');
 }
 

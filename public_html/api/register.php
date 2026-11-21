@@ -11,8 +11,7 @@ if (!empty($data['website'])) {
     ok([]);
 }
 
-rl_check('register', client_ip(), 10, 3600);
-rl_hit('register', client_ip());
+rl_hit_limited('register', client_ip(), 10, 3600);
 rl_check('room_probe', client_ip(), 15, 600);
 
 $role = v_role($data);
@@ -22,7 +21,7 @@ $stmt = db()->prepare('SELECT id, code, type, status FROM rooms WHERE code = :co
 $stmt->execute([':code' => $code]);
 $room = $stmt->fetch();
 if ($room === false) {
-    rl_hit('room_probe', client_ip());
+    rl_hit_limited('room_probe', client_ip(), 15, 600);
     fail(404, 'ROOM_NOT_FOUND', 'Комната не найдена, проверьте код');
 }
 if ($room['type'] !== $role) {
@@ -42,7 +41,18 @@ if (room_participants_count($db, $roomId) >= (int)cfg('MAX_USERS_PER_ROOM', 200)
 $profile = v_profile(v_object($data, 'profile'), $role, true);
 v_consent($data);
 
+$manual = begin_write($db);
 try {
+    // Перепроверяем статус и ёмкость под блокировкой записи.
+    $check = $db->prepare('SELECT status FROM rooms WHERE id = :id');
+    $check->execute([':id' => $roomId]);
+    if ($check->fetchColumn() !== 'open') {
+        throw new ConflictException('ROOM_CLOSED', 'Регистрация в этой комнате уже закрыта');
+    }
+    if (room_participants_count($db, $roomId) >= (int)cfg('MAX_USERS_PER_ROOM', 200)) {
+        throw new ConflictException('ROOM_FULL', 'В комнате нет свободных мест');
+    }
+
     $stmt = $db->prepare('INSERT INTO users (room_id, login, contact, full_name, group_or_position, wish, link, alternative, pass_hash) VALUES (:room, :login, :contact, :full_name, :group_or_position, :wish, :link, :alternative, :hash)');
     $stmt->execute([
         ':room' => $roomId,
@@ -56,10 +66,15 @@ try {
         ':hash' => password_hash($profile['password'], PASSWORD_DEFAULT),
     ]);
     $userId = (int)$db->lastInsertId();
+    commit_write($db, $manual);
 } catch (PDOException $e) {
+    rollback_write($db, $manual);
     if (is_unique_violation($e)) {
         fail(409, 'LOGIN_TAKEN', 'Этот контакт уже зарегистрирован в комнате — войдите');
     }
+    throw $e;
+} catch (Throwable $e) {
+    rollback_write($db, $manual);
     throw $e;
 }
 

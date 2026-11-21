@@ -9,18 +9,18 @@ check_csrf();
 $data = json_body();
 
 $db = db();
-$stmt = $db->prepare('SELECT status FROM rooms WHERE id = :id');
-$stmt->execute([':id' => (int)$user['room_id']]);
-$room = $stmt->fetch();
-if ($room !== false && $room['status'] === 'drawn' && !(bool)cfg('ALLOW_EDIT_AFTER_DRAW', false)) {
-    fail(409, 'ROOM_CLOSED', 'После жеребьёвки анкету изменить нельзя');
-}
+$allowEditAfterDraw = (bool)cfg('ALLOW_EDIT_AFTER_DRAW', false);
 
 $wish = v_wish(v_string($data, 'wish', 'wish'));
 $link = v_link(v_string($data, 'link', 'link', false));
 $alternative = v_alternative(v_string($data, 'alternative', 'alternative', false));
 
-$stmt = $db->prepare('UPDATE users SET wish = :wish, link = :link, alternative = :alternative WHERE id = :id AND room_id = :room');
+// Условие «комната открыта» в самом UPDATE, чтобы правка не прошла уже
+// после жеребьёвки, даже если статус изменился между проверками.
+$guard = $allowEditAfterDraw
+    ? ''
+    : ' AND EXISTS (SELECT 1 FROM rooms r WHERE r.id = users.room_id AND r.status = \'open\')';
+$stmt = $db->prepare('UPDATE users SET wish = :wish, link = :link, alternative = :alternative WHERE id = :id AND room_id = :room' . $guard);
 $stmt->execute([
     ':wish' => $wish,
     ':link' => $link,
@@ -28,6 +28,15 @@ $stmt->execute([
     ':id' => (int)$user['id'],
     ':room' => (int)$user['room_id'],
 ]);
+
+if (!$allowEditAfterDraw && $stmt->rowCount() !== 1) {
+    // Либо комната уже разжана, либо менять нечего (MySQL при тех же значениях).
+    $check = $db->prepare('SELECT status FROM rooms WHERE id = :id');
+    $check->execute([':id' => (int)$user['room_id']]);
+    if ($check->fetchColumn() === 'drawn') {
+        fail(409, 'ROOM_CLOSED', 'После жеребьёвки анкету изменить нельзя');
+    }
+}
 
 $user['wish'] = $wish;
 $user['link'] = $link;

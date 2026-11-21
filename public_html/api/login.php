@@ -28,7 +28,7 @@ if ($code !== null) {
     $room = $stmt->fetch();
 }
 if ($room === false) {
-    rl_hit('room_probe', $ip);
+    rl_hit_limited('room_probe', $ip, 15, 600);
 }
 
 $user = false;
@@ -41,8 +41,8 @@ if ($room !== false && $contact !== null) {
 // Одинаковый ответ и одинаковое время для «нет пользователя» и «неверный пароль».
 $verified = password_verify($password, $user === false ? SANTA_DUMMY_HASH : $user['pass_hash']);
 if ($user === false || !$verified) {
-    rl_hit('login_fail', $key);
-    rl_hit('login_ip', $ip);
+    rl_hit_limited('login_fail', $key, 5, 900);
+    rl_hit_limited('login_ip', $ip, 20, 900);
     fail(401, 'BAD_CREDENTIALS', 'Неверный код комнаты, контакт или пароль');
 }
 
