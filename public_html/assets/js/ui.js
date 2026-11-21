@@ -460,27 +460,3 @@ export function formatDate(value) {
         minute: '2-digit',
     });
 }
-
-export function startSnow() {
-    const host = document.getElementById('snow');
-    const bubbles = document.getElementById('bubbles');
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduce) {
-        return;
-    }
-    if (host) {
-        const stars = { 3: true, 7: true, 12: true };
-        for (let index = 1; index <= 14; index++) {
-            const classes = ['snowflake', 's' + String(index)];
-            if (stars[index]) {
-                classes.push('snowflake--star');
-            }
-            host.append(el('span', { class: classes.join(' '), 'aria-hidden': 'true' }));
-        }
-    }
-    if (bubbles) {
-        for (let index = 1; index <= 8; index++) {
-            bubbles.append(el('span', { class: 'bubble b' + String(index), 'aria-hidden': 'true' }));
-        }
-    }
-}

@@ -76,15 +76,17 @@ function contactRow(contact) {
 
 function recipientCard(recipient) {
     const card = el('div', { class: 'card gift-card' }, [
-        el('p', { class: 'kicker' }, [
-            icon('gift'),
-            el('span', { text: 'Вы дарите подарок' }),
-        ]),
         el('h2', { class: 'recipient-name', text: recipient.full_name }),
     ]);
     if (recipient.group_or_position) {
         card.append(el('p', { class: 'muted', text: recipient.group_or_position }));
     }
+    card.append(
+        el('p', { class: 'gift-label' }, [
+            icon('gift'),
+            el('span', { text: 'Вы дарите подарок' }),
+        ]),
+    );
 
     card.append(el('h3', { class: 'subheading', text: 'Контакт' }), contactRow(recipient.contact));
     const telegram = telegramUrl(recipient.contact);

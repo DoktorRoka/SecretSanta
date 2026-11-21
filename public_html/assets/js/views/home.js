@@ -15,11 +15,8 @@ export default function homeView(view) {
     const scene = winterScene();
     view.append(
         el('header', { class: 'hero' }, [
-            el('p', { class: 'kicker' }, [
-                icon('tree'),
-                el('span', { text: 'Тайный Санта' }),
-            ]),
-            el('h1', { class: 'hero-title', text: 'Подарите праздник коллеге или одногруппнику' }),
+            el('h1', { class: 'hero-title', text: 'Тайный Санта' }),
+            el('p', { class: 'hero-lede', text: 'Подарите праздник коллеге или одногруппнику' }),
             el('p', {
                 class: 'lead',
                 text: 'Создайте комнату, соберите участников и проведите жеребьёвку. Каждый увидит только своего получателя.',
