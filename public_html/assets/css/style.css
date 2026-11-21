@@ -1186,6 +1186,9 @@ textarea:focus-visible,
     padding: 1.1rem;
     border-radius: 22px;
     border-color: rgba(255, 255, 255, 0.85);
+    /* Модалка — это область чтения: держим фон почти непрозрачным,
+       чтобы тёмный текст не пропадал на размытом фоне к низу прокрутки. */
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(224, 241, 252, 0.94));
 }
 
 .modal-head {
