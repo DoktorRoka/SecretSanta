@@ -163,15 +163,15 @@ function userList(view, room, users) {
     const list = el('ul', { class: 'user-list' });
     users.forEach((user) => {
         const actions = el('div', { class: 'user-actions' });
-        const resetButton = el('button', {
-            class: 'btn btn-small btn-secondary',
-            type: 'button',
-            text: 'Сбросить ПИН',
-        });
-        resetButton.addEventListener('click', () => resetPin(user, resetButton));
-        actions.append(resetButton);
-
         if (room.status === 'open') {
+            const resetButton = el('button', {
+                class: 'btn btn-small btn-secondary',
+                type: 'button',
+                text: 'Сбросить ПИН',
+            });
+            resetButton.addEventListener('click', () => resetPin(user, resetButton));
+            actions.append(resetButton);
+
             const deleteButton = el('button', {
                 class: 'btn btn-small btn-ghost-danger',
                 type: 'button',

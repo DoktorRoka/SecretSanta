@@ -106,7 +106,7 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 | `POST /api/admin/login.php` | аноним + CSRF | `{code,password}` | `{room}` |
 | `GET /api/admin/room.php` | организатор | — | `{room,users}` |
 | `POST /api/admin/user_delete.php` | организатор + CSRF | `{user_id}` | `{participants_count}` |
-| `POST /api/admin/user_reset_pin.php` | организатор + CSRF | `{user_id}` | `{pin}` |
+| `POST /api/admin/user_reset_pin.php` | организатор + CSRF, только при статусе `open` | `{user_id}` | `{pin}` |
 | `POST /api/admin/draw.php` | организатор + CSRF | `{confirm:true}` | `{status,participants_count}` |
 | `POST /api/super/login.php` | аноним + CSRF | `{password}` | `{}` |
 | `GET /api/super/rooms.php` | суперадмин | — | `{rooms:[...]}` |
@@ -115,6 +115,8 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 | `POST /api/super/draw.php` | суперадмин + CSRF | `{room_id}` | `{status,participants_count}` |
 | `POST /api/super/draw_reset.php` | суперадмин + CSRF | `{room_id,confirm_code}` | `{status:'open'}` |
 | `POST /api/super/purge.php` | суперадмин + CSRF | `{confirm:'УДАЛИТЬ ВСЁ'}` | `{}` |
+
+Сброс ПИН организатором (`user_reset_pin`) работает только пока комната в статусе `open`; после жеребьёвки — `409 ROOM_CLOSED`. Жеребьёвка (`admin/draw.php`, `super/draw.php`) увеличивает `auth_ver` всем участникам, поэтому все активные сессии участников сбрасываются и вход нужно выполнить заново.
 
 Коды ошибок: `VALIDATION` (400), `UNAUTHORIZED` / `BAD_CREDENTIALS` (401), `FORBIDDEN` / `CSRF` / `PASSWORD_CHANGE_REQUIRED` (403), `NOT_FOUND` / `ROOM_NOT_FOUND` (404), `ROOM_CLOSED` / `ROOM_FULL` / `LOGIN_TAKEN` / `ROOM_EXISTS` / `ROOM_TYPE_MISMATCH` / `NOT_ENOUGH` / `ROOM_LIMIT` (409), `PAYLOAD_TOO_LARGE` (413), `UNSUPPORTED_MEDIA_TYPE` (415), `RATE_LIMIT` (429 + `Retry-After`), `BUSY` (503), `SERVER` (500).
 
@@ -130,9 +132,11 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 8. Ссылки принимаются только со схемами `http`/`https`, без пробелов, с доменом, без `user:pass@`; пустая строка допустима. На клиенте ссылка повторно проверяется и показывается вместе с hostname.
 9. Контакт: Telegram приводится к `@lowercase`, телефон — к `+7…`/цифрам, `login` — только цифры для телефона и lowercase-имя для Telegram.
 10. Время в БД — UTC строками `YYYY-MM-DD HH:MM:SS`; на клиенте даты показываются в локальном часовом поясе.
-11. Пины и пароли, сгенерированные организатором/суперадмином, показываются один раз и не логируются. `Cache-Control: no-store` стоит на всех ответах API.
+11. Пины и пароли, сгенерированные организатором/суперадмином, показываются один раз; сам секрет не логируется — в журнал попадает только факт сброса ПИН (комната и участник). `Cache-Control: no-store` стоит на всех ответах API.
 12. Снег на фоне — 14 CSS-снежинок без inline-стилей; при `prefers-reduced-motion` отключается.
 13. `FORCE_HTTPS` не выполняет редирект в PHP: на хостинге его делает `.htaccess`; в PHP флаг используется только для `Secure`-cookie и HSTS.
+14. Сброс ПИН организатором разрешён только пока комната открыта: после жеребьёвки эндпоинт отвечает 409 `ROOM_CLOSED`. Так организатор не может получить доступ к чужому кабинету и увидеть чужие пары.
+15. Жеребьёвка увеличивает `auth_ver` всем участникам — их сессии становятся недействительными, после жеребьёвки вход выполняется заново. Это гасит и сессии, заранее собранные организатором.
 
 ## Проверки безопасности
 

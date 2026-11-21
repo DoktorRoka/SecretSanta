@@ -55,6 +55,11 @@ function run_draw(PDO $db, int $roomId): void
             throw new ConflictException('ROOM_CLOSED', 'Жеребьёвка в этой комнате уже проведена');
         }
 
+        // Жеребьёвка обнуляет сессии участников: любой креденшл, добытый
+        // организатором до неё, перестаёт действовать после.
+        $db->prepare('UPDATE users SET auth_ver = auth_ver + 1 WHERE room_id = :room')
+            ->execute([':room' => $roomId]);
+
         if ($sqlite) {
             $db->exec('COMMIT');
         } else {
