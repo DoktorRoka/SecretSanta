@@ -599,6 +599,73 @@ select {
     text-shadow: 0 1px 5px rgba(3, 20, 36, 0.5);
 }
 
+/* ------------------------------------------------------- футер / авторы -- */
+
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#view {
+    flex: 1 1 auto;
+}
+
+.site-footer {
+    position: relative;
+    z-index: 1;
+    margin-top: 1.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(4, 24, 44, 0.26);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.site-footer-inner {
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0.95rem 16px calc(1.1rem + env(safe-area-inset-bottom));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+}
+
+.site-footer-name {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--frost);
+    text-shadow: 0 1px 5px rgba(3, 20, 36, 0.45);
+}
+
+.site-footer-role {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    color: #bfe0f2;
+}
+
+.site-footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    color: var(--gold-soft);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.site-footer-link:hover {
+    color: #fff;
+}
+
+.site-footer-link .ic {
+    width: 1.15em;
+    height: 1.15em;
+}
+
 .text-link {
     color: var(--gold-soft);
     font-weight: 700;

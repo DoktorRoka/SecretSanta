@@ -1,8 +1,14 @@
 import { api, loadSession, state } from './api.js';
 import { initRouter, renderRoute } from './router.js';
 import { startSnow } from './ui.js';
+import { authorPlate } from './authors.js';
 
 startSnow();
+
+const appRoot = document.getElementById('app');
+if (appRoot) {
+    appRoot.append(authorPlate());
+}
 
 window.addEventListener('santa:unauthorized', (event) => {
     const path = (event.detail && event.detail.path) || '';
