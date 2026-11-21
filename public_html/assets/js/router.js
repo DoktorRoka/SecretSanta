@@ -43,7 +43,11 @@ function matchRoute(path) {
         for (let index = 0; index < parts.length; index++) {
             const part = parts[index];
             if (part.startsWith(':')) {
-                params[part.slice(1)] = decodeURIComponent(actual[index]);
+                try {
+                    params[part.slice(1)] = decodeURIComponent(actual[index]);
+                } catch (error) {
+                    return null;
+                }
             } else if (part !== actual[index]) {
                 matched = false;
                 break;
