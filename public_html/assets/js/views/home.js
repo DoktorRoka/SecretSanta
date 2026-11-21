@@ -1,6 +1,7 @@
 import { el } from '../ui.js';
 import { icon } from '../icons.js';
 import { helpButton } from '../help.js';
+import { winterScene } from '../winter-scene.js';
 
 function choiceCard(href, iconName, title, subtitle) {
     return el('a', { class: 'choice-card', href }, [
@@ -11,6 +12,7 @@ function choiceCard(href, iconName, title, subtitle) {
 }
 
 export default function homeView(view) {
+    const scene = winterScene();
     view.append(
         el('header', { class: 'hero' }, [
             el('p', { class: 'kicker' }, [
@@ -34,5 +36,8 @@ export default function homeView(view) {
         el('footer', { class: 'page-footer' }, [
             el('a', { class: 'muted-link', href: '#/admin', text: 'Я организатор' }),
         ]),
+        scene.node,
     );
+
+    return scene.destroy;
 }

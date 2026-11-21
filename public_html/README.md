@@ -15,7 +15,7 @@ public_html/                  корень сайта (www/<домен>/)
 ├─ README.md                  этот файл
 ├─ assets/
 │  ├─ css/style.css
-│  ├─ js/ main.js router.js api.js ui.js icons.js help.js authors.js validators.js
+│  ├─ js/ main.js router.js api.js ui.js icons.js help.js authors.js winter-scene.js validators.js
 │  │  └─ views/ home.js role.js join.js create.js login.js cabinet.js
 │  │            password.js admin.js super.js profile.js
 │  └─ img/favicon.svg

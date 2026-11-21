@@ -293,6 +293,26 @@ select {
     text-shadow: 0 1px 4px rgba(3, 20, 36, 0.4);
 }
 
+/* ---------------------------------------------------------- зимняя сценка -- */
+
+.winter-scene {
+    position: relative;
+    margin: 0.35rem 0 1.1rem;
+    border: 2px solid #071324;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #102a4c;
+    box-shadow:
+        0 14px 28px -18px rgba(2, 20, 36, 0.8);
+}
+
+.winter-scene-canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+}
+
 .page-header {
     padding: 0.4rem 0 1.1rem;
 }
