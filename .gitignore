@@ -1,7 +1,8 @@
 STYLE.md
 /TASK/
-
-# Секреты и данные не попадают в репозиторий
+/audits/
+/.opencode/
+# secrets
 /public_html/config.php
 /public_html/data/santa.sqlite
 /public_html/data/santa.sqlite-wal
