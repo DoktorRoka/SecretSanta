@@ -1,6 +1,7 @@
 import { el } from '../ui.js';
 import { icon } from '../icons.js';
 import { helpButton } from '../help.js';
+import { winterScene } from '../winter-scene.js';
 
 function choiceCard(href, iconName, title, subtitle) {
     return el('a', { class: 'choice-card', href }, [
@@ -11,6 +12,7 @@ function choiceCard(href, iconName, title, subtitle) {
 }
 
 export default function homeView(view) {
+    const scene = winterScene();
     view.append(
         el('header', { class: 'hero' }, [
             el('p', { class: 'kicker' }, [
@@ -23,6 +25,7 @@ export default function homeView(view) {
                 text: 'Создайте комнату, соберите участников и проведите жеребьёвку. Каждый увидит только своего получателя.',
             }),
         ]),
+        scene.node,
         el('div', { class: 'choice-grid' }, [
             choiceCard('#/role/student', 'cap', 'Я студент', 'Комната для группы'),
             choiceCard('#/role/teacher', 'board', 'Я преподаватель', 'Комната для кафедры'),
@@ -35,4 +38,6 @@ export default function homeView(view) {
             el('a', { class: 'muted-link', href: '#/admin', text: 'Я организатор' }),
         ]),
     );
+
+    return scene.destroy;
 }
