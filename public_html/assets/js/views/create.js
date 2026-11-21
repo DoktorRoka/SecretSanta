@@ -53,7 +53,7 @@ function createdScreen(view, code) {
     view.append(
         pageHeader('Комната создана', 'Теперь пригласите участников.', null),
         el('div', { class: 'card stack center' }, [
-            el('span', { class: 'kicker', text: 'Код комнаты' }),
+            el('span', { class: 'field-caption', text: 'Код комнаты' }),
             codeValue,
             copy,
             el('p', {
