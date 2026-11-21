@@ -2,6 +2,9 @@ STYLE.md
 /TASK/
 /audits/
 /.opencode/
+/.impeccable/
+/DESIGN.md
+/PRODUCT.md
 # secrets
 /public_html/config.php
 /public_html/data/santa.sqlite
