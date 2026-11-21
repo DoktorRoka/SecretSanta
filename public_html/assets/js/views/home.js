@@ -25,7 +25,6 @@ export default function homeView(view) {
                 text: 'Создайте комнату, соберите участников и проведите жеребьёвку. Каждый увидит только своего получателя.',
             }),
         ]),
-        scene.node,
         el('div', { class: 'choice-grid' }, [
             choiceCard('#/role/student', 'cap', 'Я студент', 'Комната для группы'),
             choiceCard('#/role/teacher', 'board', 'Я преподаватель', 'Комната для кафедры'),
@@ -37,6 +36,7 @@ export default function homeView(view) {
         el('footer', { class: 'page-footer' }, [
             el('a', { class: 'muted-link', href: '#/admin', text: 'Я организатор' }),
         ]),
+        scene.node,
     );
 
     return scene.destroy;
