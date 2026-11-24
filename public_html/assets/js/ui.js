@@ -242,6 +242,30 @@ export function pageHeader(title, subtitle, backHash) {
     return header;
 }
 
+/**
+ * Индикатор шагов. `current` — индекс текущего шага (с нуля); пройденные
+ * отмечаются галочкой. Разметка — список, чтобы читалось скринридером.
+ */
+export function stepper(steps, current) {
+    const list = el('ol', { class: 'stepper', 'aria-label': 'Шаги' });
+    steps.forEach((label, index) => {
+        const status = index < current ? 'done' : index === current ? 'current' : 'todo';
+        const marker = status === 'done'
+            ? icon('check')
+            : el('span', { class: 'step-index', text: String(index + 1) });
+        list.append(
+            el('li', {
+                class: 'step step-' + status,
+                'aria-current': index === current ? 'step' : null,
+            }, [
+                el('span', { class: 'step-marker', 'aria-hidden': 'true' }, [marker]),
+                el('span', { class: 'step-label', text: label }),
+            ]),
+        );
+    });
+    return list;
+}
+
 export function statusBadge(status) {
     const map = {
         open: { text: 'Регистрация открыта', tone: 'success' },

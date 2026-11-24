@@ -1,5 +1,12 @@
 import { el, field, passwordField, setFieldError } from '../ui.js';
 
+/**
+ * Анкета разбита на три части, чтобы поток мог показывать их по шагам:
+ *   identity    — кто вы (имя, группа/должность, контакт);
+ *   gift        — что подарить (пожелания, ссылка, альтернатива);
+ *   credentials — как входить (пароль участника и/или кодовое слово).
+ * Поля создаются один раз и переиспользуются между шагами: значения не теряются.
+ */
 export function buildProfileSection(role, options = {}) {
     const withPassword = options.withPassword !== false;
     const inputs = {};
@@ -55,7 +62,7 @@ export function buildProfileSection(role, options = {}) {
         placeholder: 'Запасной вариант подарка',
     });
 
-    const children = [
+    const identity = el('div', { class: 'form-section' }, [
         el('h2', { class: 'section-title', text: 'Ваша анкета' }),
         el('p', {
             class: 'hint',
@@ -68,12 +75,33 @@ export function buildProfileSection(role, options = {}) {
         field('Контакт для связи', inputs.contact, {
             hint: 'Telegram (@nickname) или телефон. По нему вы будете входить в кабинет.',
         }),
+    ]);
+
+    const gift = el('div', { class: 'form-section' }, [
+        el('h2', { class: 'section-title', text: 'Пожелания к подарку' }),
+        el('p', {
+            class: 'hint',
+            text: 'Чем конкретнее, тем легче вашему дарителю. Этот текст увидит только он.',
+        }),
         field('Пожелания к подарку', inputs.wish, {
             hint: 'До 1000 символов. Получатель увидит этот текст.',
         }),
         field('Ссылка на вишлист', inputs.link, { hint: 'Необязательно, только http или https' }),
         field('Альтернатива', inputs.alternative, {
             hint: 'Необязательно: что подойдёт, если основное желание недоступно',
+        }),
+    ]);
+
+    const credentialsChildren = [
+        el('h2', {
+            class: 'section-title',
+            text: withPassword ? 'Пароль и восстановление' : 'Восстановление доступа',
+        }),
+        el('p', {
+            class: 'hint',
+            text: withPassword
+                ? 'Личный пароль для входа в кабинет и кодовое слово на случай, если его забудете.'
+                : 'Кодовое слово пригодится, если вы забудете пароль организатора.',
         }),
     ];
 
@@ -84,7 +112,7 @@ export function buildProfileSection(role, options = {}) {
             hint: 'От 4 символов. Личный пароль для входа в кабинет: код комнаты + контакт + этот пароль.',
         });
         inputs.password = password.input;
-        children.push(password.field);
+        credentialsChildren.push(password.field);
     }
 
     if (options.withRecovery !== false) {
@@ -94,13 +122,12 @@ export function buildProfileSection(role, options = {}) {
             hint: 'Придумайте свой секрет (от 4 символов). Если забудете пароль, восстановите доступ по нему. Организатор его не видит.',
         });
         inputs.recovery = recovery.input;
-        children.push(recovery.field);
+        credentialsChildren.push(recovery.field);
     }
 
-    return {
-        section: el('div', { class: 'form-section' }, children),
-        inputs,
-    };
+    const credentials = el('div', { class: 'form-section' }, credentialsChildren);
+
+    return { identity, gift, credentials, inputs };
 }
 
 export function readProfile(inputs) {
