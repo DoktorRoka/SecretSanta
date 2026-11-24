@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS rooms (
   type TEXT NOT NULL CHECK (type IN ('student','teacher')),
   admin_pass_hash TEXT NOT NULL,
   admin_auth_ver INTEGER NOT NULL DEFAULT 1,
+  owner_user_id INTEGER,
   status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open','drawn')),
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   drawn_at TEXT

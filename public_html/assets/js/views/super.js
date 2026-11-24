@@ -137,7 +137,7 @@ function roomRow(view, room) {
         actionButton('Пароль', 'btn-secondary', () => {
             typedConfirm({
                 title: 'Сбросить пароль организатора?',
-                message: 'Для комнаты ' + room.code + ' будет создан новый временный пароль.',
+                message: 'Для комнаты ' + room.code + ' будет создан новый пароль — общий для панели и кабинета организатора.',
                 confirmLabel: 'Сбросить',
                 onConfirm: () => api('POST', '/api/super/room_reset_admin.php', { room_id: room.id }),
                 onSuccess: (data) => {
@@ -145,7 +145,7 @@ function roomRow(view, room) {
                         title: 'Новый пароль организатора',
                         label: 'Пароль для комнаты ' + room.code,
                         value: data.password,
-                        warning: 'Показывается один раз. Передайте организатору лично.',
+                        warning: 'Показывается один раз. Передайте организатору лично — он же открывает его кабинет.',
                     });
                 },
             });

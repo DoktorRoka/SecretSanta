@@ -9,9 +9,11 @@ check_csrf();
 $data = json_body();
 $roomId = v_int_id($data, 'room_id');
 
-$exists = db()->prepare('SELECT id FROM rooms WHERE id = :id');
+$db = db();
+$exists = $db->prepare('SELECT id, owner_user_id FROM rooms WHERE id = :id');
 $exists->execute([':id' => $roomId]);
-if ($exists->fetch() === false) {
+$room = $exists->fetch();
+if ($room === false) {
     fail(404, 'NOT_FOUND', 'Комната не найдена');
 }
 
@@ -20,8 +22,15 @@ $password = '';
 for ($i = 0; $i < 10; $i++) {
     $password .= $alphabet[random_int(0, strlen($alphabet) - 1)];
 }
+$hash = password_hash($password, PASSWORD_DEFAULT);
 
-$stmt = db()->prepare('UPDATE rooms SET admin_pass_hash = :hash, admin_auth_ver = admin_auth_ver + 1 WHERE id = :id');
-$stmt->execute([':hash' => password_hash($password, PASSWORD_DEFAULT), ':id' => $roomId]);
+$stmt = $db->prepare('UPDATE rooms SET admin_pass_hash = :hash, admin_auth_ver = admin_auth_ver + 1 WHERE id = :id');
+$stmt->execute([':hash' => $hash, ':id' => $roomId]);
+
+// У организатора пароль общий для панели и кабинета — меняем оба места сразу.
+if ($room['owner_user_id'] !== null) {
+    $stmt = $db->prepare('UPDATE users SET pass_hash = :hash, auth_ver = auth_ver + 1 WHERE id = :owner AND room_id = :room');
+    $stmt->execute([':hash' => $hash, ':owner' => (int)$room['owner_user_id'], ':room' => $roomId]);
+}
 
 ok(['password' => $password]);

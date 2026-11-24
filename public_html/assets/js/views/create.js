@@ -58,7 +58,7 @@ function createdScreen(view, code) {
             copy,
             el('p', {
                 class: 'warning-text',
-                text: 'Запишите код и пароль организатора. Восстановить их можно только через суперадминистратора.',
+                text: 'Запишите код комнаты и пароль организатора — этим же паролем вы входите в свой кабинет. Восстановить его может только суперадминистратор.',
             }),
         ]),
         el('a', { class: 'btn btn-primary btn-block', href: '#/cabinet', text: 'В кабинет' }),
@@ -85,13 +85,13 @@ export default function createView(view) {
     const adminPassword = passwordField('Пароль организатора', {
         name: 'admin_password',
         autocomplete: 'new-password',
-        hint: 'От 8 символов. Пароль для панели комнаты (код + этот пароль). Участникам его не сообщайте.',
+        hint: 'От 8 символов. Один пароль для панели организатора и для входа в ваш кабинет. Участникам его не сообщайте.',
     });
     const adminConfirm = passwordField('Пароль организатора ещё раз', {
         name: 'admin_password_confirm',
         autocomplete: 'new-password',
     });
-    const profile = buildProfileSection(role, { withPassword: true });
+    const profile = buildProfileSection(role, { withPassword: false });
     const consent = checkboxField(
         'Я согласен(на) на обработку персональных данных',
         'consent',
@@ -120,11 +120,11 @@ export default function createView(view) {
         adminPassword.field,
         adminConfirm.field,
         el('p', { class: 'info-note' }, [
-            'Здесь два разных пароля. ',
-            el('strong', { text: 'Пароль организатора' }),
-            ' открывает панель комнаты. ',
-            el('strong', { text: 'Пароль для входа' }),
-            ' — личный, для вашего кабинета участника; вы зададите его ниже, в анкете.',
+            'Пароль один на всё: им вы открываете и ',
+            el('strong', { text: 'панель организатора' }),
+            ', и свой ',
+            el('strong', { text: 'кабинет' }),
+            '. Участникам он не нужен — у каждого из них свой пароль.',
         ]),
         el('div', { class: 'help-row help-row-start' }, [
             helpButton('Подробнее о паролях', 'link-btn'),
@@ -141,7 +141,7 @@ export default function createView(view) {
         showFormError(errorNode, '');
         clearFieldErrors(allInputs);
 
-        const errors = validateProfile(readProfile(profile.inputs), role, { withPassword: true });
+        const errors = validateProfile(readProfile(profile.inputs), role, { withPassword: false });
         const codeMessage = validateCode(codeInput.value);
         if (codeMessage) {
             errors.code = codeMessage;

@@ -30,6 +30,8 @@ function db(): PDO
         $exists = $pdo->query("SHOW TABLES LIKE 'rooms'")->fetchColumn();
         if ($exists === false) {
             db_run_schema($pdo, SANTA_APP . '/schema_mysql.sql');
+        } else {
+            db_ensure_columns($pdo);
         }
         return $pdo;
     }
@@ -52,9 +54,31 @@ function db(): PDO
     $exists = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='rooms'")->fetchColumn();
     if ($exists === false) {
         db_run_schema($pdo, SANTA_APP . '/schema.sql');
+    } else {
+        db_ensure_columns($pdo);
     }
     $pdo->exec('PRAGMA foreign_keys = ON');
     return $pdo;
+}
+
+/**
+ * Лёгкая миграция уже существующей БД: добавляет колонки, появившиеся после
+ * первой установки, чтобы обновление не требовало пересоздания файла.
+ */
+function db_ensure_columns(PDO $pdo): void
+{
+    $driver = strtolower((string)cfg('DB_DRIVER', 'sqlite'));
+    if ($driver === 'mysql') {
+        $exists = $pdo->query("SHOW COLUMNS FROM rooms LIKE 'owner_user_id'")->fetchColumn();
+        if ($exists === false) {
+            $pdo->exec('ALTER TABLE rooms ADD COLUMN owner_user_id INT UNSIGNED NULL');
+        }
+        return;
+    }
+    $columns = $pdo->query('PRAGMA table_info(rooms)')->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('owner_user_id', $columns, true)) {
+        $pdo->exec('ALTER TABLE rooms ADD COLUMN owner_user_id INTEGER');
+    }
 }
 
 function db_run_schema(PDO $pdo, string $file): void

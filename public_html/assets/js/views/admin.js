@@ -47,7 +47,7 @@ function loginScreen(view) {
     const password = passwordField('Пароль организатора', {
         name: 'password',
         autocomplete: 'current-password',
-        hint: 'Это пароль для панели, который вы задали при создании комнаты. Не пароль участника для кабинета.',
+        hint: 'Пароль, который вы задали при создании комнаты. Тем же паролем вы входите в свой кабинет.',
     });
     const errorNode = formError();
     const submit = el('button', { class: 'btn btn-primary', type: 'submit', text: 'Войти как организатор' });

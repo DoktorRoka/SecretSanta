@@ -37,7 +37,7 @@ export default function loginView(view) {
     const password = passwordField('Пароль или временный ПИН', {
         name: 'password',
         autocomplete: 'current-password',
-        hint: 'Личный пароль участника. Если организатор сбросил ПИН — введите временный, затем зададите новый.',
+        hint: 'Личный пароль. У организатора он же открывает панель комнаты. Если организатор сбросил ПИН — введите временный, затем зададите новый.',
     });
     const errorNode = formError();
     const submit = el('button', { class: 'btn btn-primary', type: 'submit', text: 'Войти' });

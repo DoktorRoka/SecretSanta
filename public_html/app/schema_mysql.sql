@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS rooms (
   type ENUM('student','teacher') NOT NULL,
   admin_pass_hash VARCHAR(255) NOT NULL,
   admin_auth_ver INT UNSIGNED NOT NULL DEFAULT 1,
+  owner_user_id INT UNSIGNED NULL,
   status ENUM('open','drawn') NOT NULL DEFAULT 'open',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   drawn_at DATETIME NULL,

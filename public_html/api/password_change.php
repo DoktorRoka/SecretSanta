@@ -16,7 +16,7 @@ if ($oldPassword === $newPassword) {
 }
 
 $db = db();
-$stmt = $db->prepare('SELECT u.login, u.pass_hash, r.code FROM users u JOIN rooms r ON r.id = u.room_id WHERE u.id = :id AND u.room_id = :room');
+$stmt = $db->prepare('SELECT u.login, u.pass_hash, r.code, r.owner_user_id FROM users u JOIN rooms r ON r.id = u.room_id WHERE u.id = :id AND u.room_id = :room');
 $stmt->execute([':id' => (int)$user['id'], ':room' => (int)$user['room_id']]);
 $row = $stmt->fetch();
 if ($row === false) {
@@ -30,12 +30,19 @@ if (!password_verify($oldPassword, (string)$row['pass_hash'])) {
     v_fail('old_password', 'Неверный текущий пароль');
 }
 
+$hash = password_hash($newPassword, PASSWORD_DEFAULT);
 $stmt = $db->prepare('UPDATE users SET pass_hash = :hash, must_change_pass = 0, auth_ver = auth_ver + 1 WHERE id = :id AND room_id = :room');
 $stmt->execute([
-    ':hash' => password_hash($newPassword, PASSWORD_DEFAULT),
+    ':hash' => $hash,
     ':id' => (int)$user['id'],
     ':room' => (int)$user['room_id'],
 ]);
+
+// У организатора пароль один: сменил в кабинете — сменился и в панели.
+if ($row['owner_user_id'] !== null && (int)$row['owner_user_id'] === (int)$user['id']) {
+    $stmt = $db->prepare('UPDATE rooms SET admin_pass_hash = :hash WHERE id = :room');
+    $stmt->execute([':hash' => $hash, ':room' => (int)$user['room_id']]);
+}
 
 rl_clear('login_fail', $key);
 session_regenerate_id(true);
