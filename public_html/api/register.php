@@ -53,7 +53,7 @@ try {
         throw new ConflictException('ROOM_FULL', 'В комнате нет свободных мест');
     }
 
-    $stmt = $db->prepare('INSERT INTO users (room_id, login, contact, full_name, group_or_position, wish, link, alternative, pass_hash) VALUES (:room, :login, :contact, :full_name, :group_or_position, :wish, :link, :alternative, :hash)');
+    $stmt = $db->prepare('INSERT INTO users (room_id, login, contact, full_name, group_or_position, wish, link, alternative, pass_hash, recovery_hash) VALUES (:room, :login, :contact, :full_name, :group_or_position, :wish, :link, :alternative, :hash, :recovery_hash)');
     $stmt->execute([
         ':room' => $roomId,
         ':login' => $profile['login'],
@@ -64,6 +64,7 @@ try {
         ':link' => $profile['link'],
         ':alternative' => $profile['alternative'],
         ':hash' => password_hash($profile['password'], PASSWORD_DEFAULT),
+        ':recovery_hash' => password_hash($profile['recovery'], PASSWORD_DEFAULT),
     ]);
     $userId = (int)$db->lastInsertId();
     commit_write($db, $manual);

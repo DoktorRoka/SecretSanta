@@ -115,6 +115,14 @@ export function validatePassword(value, min = 4) {
     return '';
 }
 
+export function validateRecovery(value) {
+    const bytes = byteLength(value);
+    if (bytes < 4 || bytes > 72) {
+        return 'Кодовое слово: от 4 до 72 символов';
+    }
+    return '';
+}
+
 export function validateRequired(value, message) {
     return String(value || '').trim() === '' ? message : '';
 }
@@ -129,6 +137,7 @@ export function validateProfile(values, role, options = {}) {
         wish: validateWish(values.wish),
         link: validateLink(values.link),
         alternative: validateAlternative(values.alternative),
+        recovery: validateRecovery(values.recovery),
     };
     for (const [key, message] of Object.entries(messages)) {
         if (message) {

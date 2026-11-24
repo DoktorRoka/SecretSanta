@@ -11,7 +11,6 @@ import {
     setBusy,
     setFieldError,
     showFormError,
-    showSecret,
     statusBadge,
     toast,
     typedConfirm,
@@ -47,7 +46,7 @@ function loginScreen(view) {
     const password = passwordField('Пароль организатора', {
         name: 'password',
         autocomplete: 'current-password',
-        hint: 'Это пароль для панели, который вы задали при создании комнаты. Не пароль участника для кабинета.',
+        hint: 'Пароль, который вы задали при создании комнаты. Тем же паролем вы входите в свой кабинет.',
     });
     const errorNode = formError();
     const submit = el('button', { class: 'btn btn-primary', type: 'submit', text: 'Войти как организатор' });
@@ -79,7 +78,7 @@ function loginScreen(view) {
             return;
         }
 
-        setBusy(submit, true, 'Входим…');
+        setBusy(submit, true, 'Входим...');
         try {
             await api('POST', '/api/admin/login.php', {
                 code: codeInput.value.trim(),
@@ -104,23 +103,6 @@ function loginScreen(view) {
         el('div', { class: 'help-row' }, [helpButton('Какой пароль вводить?', 'btn btn-ghost btn-small')]),
         el('p', { class: 'hint center', text: 'Забыли пароль организатора? Его сбросит суперадминистратор мероприятия.' }),
     );
-}
-
-function resetPin(user, button) {
-    setBusy(button, true, '…');
-    api('POST', '/api/admin/user_reset_pin.php', { user_id: user.id })
-        .then((data) => {
-            showSecret({
-                title: 'Новый ПИН',
-                label: 'Временный ПИН для ' + user.full_name,
-                value: data.pin,
-                warning: 'Показывается один раз. Передайте лично — повторно не покажем.',
-            });
-        })
-        .catch((error) => {
-            toast(error.message, 'error');
-        })
-        .finally(() => setBusy(button, false));
 }
 
 function deleteUser(view, user) {
@@ -164,14 +146,6 @@ function userList(view, room, users) {
     users.forEach((user) => {
         const actions = el('div', { class: 'user-actions' });
         if (room.status === 'open') {
-            const resetButton = el('button', {
-                class: 'btn btn-small btn-secondary',
-                type: 'button',
-                text: 'Сбросить ПИН',
-            });
-            resetButton.addEventListener('click', () => resetPin(user, resetButton));
-            actions.append(resetButton);
-
             const deleteButton = el('button', {
                 class: 'btn btn-small btn-ghost-danger',
                 type: 'button',
@@ -249,6 +223,10 @@ async function renderPanel(view) {
             el('p', {
                 class: 'stat-line',
                 text: String(room.participants_count) + ' участников (минимум ' + String(room.min_participants) + ')',
+            }),
+            el('p', {
+                class: 'hint',
+                text: 'Участники сами восстанавливают пароль по своему кодовому слову — организатор паролей не видит и не сбрасывает.',
             }),
             drawButton,
             drawHint,

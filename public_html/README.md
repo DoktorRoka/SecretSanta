@@ -16,13 +16,14 @@ public_html/                  корень сайта (www/<домен>/)
 ├─ assets/
 │  ├─ css/style.css
 │  ├─ js/ main.js router.js api.js ui.js icons.js help.js authors.js winter-scene.js validators.js
-│  │  └─ views/ home.js role.js join.js create.js login.js cabinet.js
-│  │            password.js admin.js super.js profile.js
+│  │  └─ views/ home.js role.js join.js create.js login.js recover.js
+│  │            cabinet.js password.js admin.js super.js profile.js
 │  └─ img/favicon.svg
 ├─ api/                       тонкие JSON-эндпоинты
 │  ├─ session.php  room_check.php  room_create.php  register.php
 │  ├─ login.php  logout.php  me.php  profile_update.php  password_change.php
-│  ├─ admin/  login.php  room.php  user_delete.php  user_reset_pin.php  draw.php
+│  ├─ recover.php
+│  ├─ admin/  login.php  room.php  user_delete.php  draw.php
 │  └─ super/  login.php  rooms.php  room_delete.php  room_reset_admin.php
 │             draw.php  draw_reset.php  purge.php
 ├─ app/                       вся логика и защита; закрыт .htaccess
@@ -103,10 +104,10 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 | `GET /api/me.php` | участник | — | `{must_change_pass,me,room,recipient}` |
 | `POST /api/profile_update.php` | участник + CSRF | `{wish,link,alternative}` | `{me}` |
 | `POST /api/password_change.php` | участник + CSRF | `{old_password,new_password}` | `{}` |
+| `POST /api/recover.php` | аноним + CSRF | `{code,contact,recovery,new_password}` | `{}` |
 | `POST /api/admin/login.php` | аноним + CSRF | `{code,password}` | `{room}` |
 | `GET /api/admin/room.php` | организатор | — | `{room,users}` |
 | `POST /api/admin/user_delete.php` | организатор + CSRF | `{user_id}` | `{participants_count}` |
-| `POST /api/admin/user_reset_pin.php` | организатор + CSRF, только при статусе `open` | `{user_id}` | `{pin}` |
 | `POST /api/admin/draw.php` | организатор + CSRF | `{confirm:true}` | `{status,participants_count}` |
 | `POST /api/super/login.php` | аноним + CSRF | `{password}` | `{}` |
 | `GET /api/super/rooms.php` | суперадмин | — | `{rooms:[...]}` |
@@ -116,7 +117,7 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 | `POST /api/super/draw_reset.php` | суперадмин + CSRF | `{room_id,confirm_code}` | `{status:'open'}` |
 | `POST /api/super/purge.php` | суперадмин + CSRF | `{confirm:'УДАЛИТЬ ВСЁ'}` | `{}` |
 
-Сброс ПИН организатором (`user_reset_pin`) работает только пока комната в статусе `open`; после жеребьёвки — `409 ROOM_CLOSED`. Жеребьёвка (`admin/draw.php`, `super/draw.php`) увеличивает `auth_ver` всем участникам, поэтому все активные сессии участников сбрасываются и вход нужно выполнить заново.
+Восстановление доступа (`recover.php`) — единственный способ сменить забытый пароль участника: код комнаты + контакт + личное кодовое слово. При успехе пароль задаётся сразу (без принудительной смены), `auth_ver` участника растёт, а если это организатор — синхронно обновляется пароль панели и растёт `admin_auth_ver`. Ответ на любой неверный набор — одинаковый 401 `BAD_CREDENTIALS`. Организаторского сброса ПИН больше нет: организатор никогда не получает рабочий пароль участника. Сброс суперадмином (`super/room_reset_admin.php`) меняет только пароль панели — пароль кабинета он не заменяет, поэтому суперадмин не может войти под участником и увидеть его пару. Жеребьёвка (`admin/draw.php`, `super/draw.php`) увеличивает `auth_ver` всем участникам, поэтому все активные сессии участников сбрасываются и вход нужно выполнить заново.
 
 Коды ошибок: `VALIDATION` (400), `UNAUTHORIZED` / `BAD_CREDENTIALS` (401), `FORBIDDEN` / `CSRF` / `PASSWORD_CHANGE_REQUIRED` (403), `NOT_FOUND` / `ROOM_NOT_FOUND` (404), `ROOM_CLOSED` / `ROOM_FULL` / `LOGIN_TAKEN` / `ROOM_EXISTS` / `ROOM_TYPE_MISMATCH` / `NOT_ENOUGH` / `ROOM_LIMIT` (409), `PAYLOAD_TOO_LARGE` (413), `UNSUPPORTED_MEDIA_TYPE` (415), `RATE_LIMIT` (429 + `Retry-After`), `BUSY` (503), `SERVER` (500).
 
@@ -132,11 +133,15 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 8. Ссылки принимаются только со схемами `http`/`https`, без пробелов, с доменом, без `user:pass@`; пустая строка допустима. На клиенте ссылка повторно проверяется и показывается вместе с hostname.
 9. Контакт: Telegram приводится к `@lowercase`, телефон — к `+7…`/цифрам, `login` — только цифры для телефона и lowercase-имя для Telegram.
 10. Время в БД — UTC строками `YYYY-MM-DD HH:MM:SS`; на клиенте даты показываются в локальном часовом поясе.
-11. Пины и пароли, сгенерированные организатором/суперадмином, показываются один раз; сам секрет не логируется — в журнал попадает только факт сброса ПИН (комната и участник). `Cache-Control: no-store` стоит на всех ответах API.
+11. Пароль панели, сгенерированный суперадмином, показывается один раз; сам секрет не логируется — в журнал попадает только факт сброса (комната). Факт использования восстановления по кодовому слову тоже логируется без секретов. `Cache-Control: no-store` стоит на всех ответах API.
 12. Снег на фоне — 14 CSS-снежинок без inline-стилей; при `prefers-reduced-motion` отключается.
 13. `FORCE_HTTPS` не выполняет редирект в PHP: на хостинге его делает `.htaccess`; в PHP флаг используется только для `Secure`-cookie и HSTS.
-14. Сброс ПИН организатором разрешён только пока комната открыта: после жеребьёвки эндпоинт отвечает 409 `ROOM_CLOSED`. Так организатор не может получить доступ к чужому кабинету и увидеть чужие пары.
+14. Восстановление пароля участника — самообслуживание (`POST /api/recover.php`): код комнаты + контакт + личное кодовое слово, заданное при регистрации. Организаторского сброса ПИН нет вовсе, поэтому организатор никогда не получает рабочий пароль участника и не может войти под ним и увидеть его пару. Восстановление доступно до и после жеребьёвки и сразу задаёт новый пароль (принудительной смены нет). Неудачная попытка учитывается в бакете `recover_fail` (5 за 15 минут на пару код+контакт+IP) и в `login_ip`; ответ на любой неверный набор одинаковый — 401 `BAD_CREDENTIALS`.
 15. Жеребьёвка увеличивает `auth_ver` всем участникам — их сессии становятся недействительными, после жеребьёвки вход выполняется заново. Это гасит и сессии, заранее собранные организатором.
+16. У организатора один пароль на панель и кабинет: он хранится в `rooms.admin_pass_hash` и тем же значением дублируется в `users.pass_hash` организатора, на которого указывает `rooms.owner_user_id`. Смена пароля в кабинете (`password_change.php`) и восстановление по кодовому слову (`recover.php`) обновляют обе записи в одной транзакции и увеличивают `rooms.admin_auth_ver`, поэтому пароль панели и кабинета не расходятся, а ранее выданные сессии организатора отзываются. Сброс суперадмином — исключение: он меняет только `admin_pass_hash` и не трогает `users.pass_hash`, поэтому суперадмин не получает пароль кабинета и не может войти под участником-организатором и увидеть его пару. После такого сброса пароль кабинета остаётся прежним, а организатор снова сводит пароли вместе, сменив пароль в кабинете. Минимальная длина пароля организатора — 8 символов (как при создании комнаты), у обычного участника — 4. Участник задаёт свой пароль и кодовое слово при регистрации.
+17. `db_ensure_columns()` при обновлении существующей БД добавляет колонки `rooms.owner_user_id` и `users.recovery_hash` и заполняет `owner_user_id` первым (по `id`) участником комнаты — именно он создаётся вместе с комнатой; так единый пароль снова работает и для комнат, созданных до обновления. Добавление колонок идемпотентно и устойчиво к параллельным запросам.
+18. Кодовое слово (recovery) наследует длину пароля участника — 4–72 байта. Хранится только как `password_hash(...)` в `users.recovery_hash` и никогда не отдаётся в ответах API. У участников из БД, созданной до обновления, кодовое слово пустое (NULL): они не могут восстановить пароль самостоятельно. Организатор может удалить такого участника (пока комната `open`), после чего участник регистрируется заново и задаёт кодовое слово; для новых установок это неактуально.
+19. Механика `must_change_pass` сохранена, но новых значений `1` больше никто не выставляет (организаторского сброса нет). Флаг остаётся только для записей, где он был выставлен ранее, и продолжает перенаправлять на экран `#/password`.
 
 ## Проверки безопасности
 
@@ -144,6 +149,6 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 - XSS: хранение как текст, вывод только через `textContent`/`append`; нет `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `eval`, `new Function`, inline-скриптов и inline-стилей; CSP `script-src 'self'`.
 - IDOR: `room_id`/`user_id` участника берутся из сессии; организатор работает только в своей комнате; `room_id` из запроса принимается только в `super/*` после `require_super()`.
 - CSRF: `X-CSRF-Token` + `hash_equals`, `SameSite=Lax`, обязательный JSON.
-- Перебор: 7 бакетов rate-limit, единый ответ и одинаковое время для неверного логина и пароля.
-- Пароли: `password_hash(PASSWORD_DEFAULT)`, PIN участника — 6 цифр, пароль организатора при сбросе — 10 символов без похожих.
+- Перебор: 8 бакетов rate-limit, единый ответ и одинаковое время для неверного логина, пароля и кодового слова.
+- Пароли: `password_hash(PASSWORD_DEFAULT)`; у организатора один пароль на панель и кабинет, пароль панели при сбросе суперадмином — 10 символов без похожих. Пароль участника восстанавливается только по его личному кодовому слову; организаторский сброс ПИН удалён.
 - Сессии: `santa_sid`, strict mode, `HttpOnly`, `Secure`, `SameSite=Lax`, сверка `auth_ver` на каждом запросе, суперадмин — 2 часа.

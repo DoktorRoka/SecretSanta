@@ -34,10 +34,10 @@ export default function loginView(view) {
         maxlength: '64',
         placeholder: '@nickname или телефон',
     });
-    const password = passwordField('Пароль или временный ПИН', {
+    const password = passwordField('Пароль', {
         name: 'password',
         autocomplete: 'current-password',
-        hint: 'Личный пароль участника. Если организатор сбросил ПИН — введите временный, затем зададите новый.',
+        hint: 'Личный пароль. У организатора он же открывает панель комнаты.',
     });
     const errorNode = formError();
     const submit = el('button', { class: 'btn btn-primary', type: 'submit', text: 'Войти' });
@@ -107,9 +107,10 @@ export default function loginView(view) {
         pageHeader('Вход в кабинет', 'Введите код комнаты и контакт, указанный при регистрации.', '#/home'),
         el('div', { class: 'card' }, [form]),
         el('div', { class: 'help-row' }, [helpButton('Какой пароль вводить?', 'btn btn-ghost btn-small')]),
-        el('p', {
-            class: 'hint center',
-            text: 'Забыли пароль? Организатор может сбросить ПИН до жеребьёвки; после неё восстановление — только через сброс жеребьёвки.',
-        }),
+        el('p', { class: 'hint center' }, [
+            'Забыли пароль? ',
+            el('a', { class: 'text-link', href: '#/recover', text: 'Восстановите доступ по кодовому слову' }),
+            '.',
+        ]),
     );
 }

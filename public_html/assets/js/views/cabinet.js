@@ -53,6 +53,7 @@ function actionsRow() {
         row.append(el('a', { class: 'btn btn-secondary', href: '#/admin', text: 'Панель организатора' }));
     }
     row.append(
+        el('a', { class: 'btn btn-ghost', href: '#/password', text: 'Сменить пароль' }),
         el('button', { class: 'btn btn-ghost', type: 'button', text: 'Выйти', onClick: logout }),
     );
     return row;

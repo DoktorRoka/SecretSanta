@@ -16,8 +16,9 @@ rl_hit_limited('room_create', client_ip(), 5, 3600);
 
 $role = v_role($data);
 $code = v_code(v_string($data, 'code', 'code'));
-$adminPassword = v_password(v_string($data, 'admin_password', 'admin_password'), 8, 'admin_password');
-$profile = v_profile(v_object($data, 'profile'), $role, true);
+// Один пароль организатора: он же служит паролем входа в его кабинет.
+$password = v_password(v_string($data, 'admin_password', 'admin_password'), 8, 'admin_password');
+$profile = v_profile(v_object($data, 'profile'), $role, false);
 v_consent($data);
 
 $db = db();
@@ -30,14 +31,16 @@ try {
         throw new ConflictException('ROOM_LIMIT', 'Достигнут лимит комнат, попробуйте позже');
     }
 
+    // Один и тот же хеш идёт и в панель организатора, и в его кабинет.
+    $hash = password_hash($password, PASSWORD_DEFAULT);
     $stmt = $db->prepare('INSERT INTO rooms (code, type, admin_pass_hash) VALUES (:code, :type, :hash)');
     $stmt->execute([
         ':code' => $code,
         ':type' => $role,
-        ':hash' => password_hash($adminPassword, PASSWORD_DEFAULT),
+        ':hash' => $hash,
     ]);
     $roomId = (int)$db->lastInsertId();
-    $stmt = $db->prepare('INSERT INTO users (room_id, login, contact, full_name, group_or_position, wish, link, alternative, pass_hash) VALUES (:room, :login, :contact, :full_name, :group_or_position, :wish, :link, :alternative, :hash)');
+    $stmt = $db->prepare('INSERT INTO users (room_id, login, contact, full_name, group_or_position, wish, link, alternative, pass_hash, recovery_hash) VALUES (:room, :login, :contact, :full_name, :group_or_position, :wish, :link, :alternative, :hash, :recovery_hash)');
     $stmt->execute([
         ':room' => $roomId,
         ':login' => $profile['login'],
@@ -47,9 +50,13 @@ try {
         ':wish' => $profile['wish'],
         ':link' => $profile['link'],
         ':alternative' => $profile['alternative'],
-        ':hash' => password_hash($profile['password'], PASSWORD_DEFAULT),
+        ':hash' => $hash,
+        ':recovery_hash' => password_hash($profile['recovery'], PASSWORD_DEFAULT),
     ]);
     $userId = (int)$db->lastInsertId();
+    // Запоминаем организатора: по нему пароль панели и кабинета держим общим.
+    $stmt = $db->prepare('UPDATE rooms SET owner_user_id = :owner WHERE id = :room');
+    $stmt->execute([':owner' => $userId, ':room' => $roomId]);
     commit_write($db, $manual);
 } catch (PDOException $e) {
     rollback_write($db, $manual);

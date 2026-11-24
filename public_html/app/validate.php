@@ -198,6 +198,19 @@ function v_password(string $value, int $min, string $field = 'password'): string
     return $value;
 }
 
+/**
+ * Кодовое слово — личный секрет участника для самостоятельного восстановления
+ * пароля. Длина как у пароля участника: 4–72 байта.
+ */
+function v_recovery(string $value): string
+{
+    $length = strlen($value);
+    if (strpos($value, "\0") !== false || $length < 4 || $length > 72) {
+        v_fail('recovery', 'Кодовое слово: от 4 до 72 символов');
+    }
+    return $value;
+}
+
 function v_consent(array $data): void
 {
     if (!array_key_exists('consent', $data) || $data['consent'] !== true) {
@@ -216,6 +229,7 @@ function v_profile(array $profile, string $role, bool $withPassword): array
         'wish' => v_wish(v_string($profile, 'wish', 'wish')),
         'link' => v_link(v_string($profile, 'link', 'link', false)),
         'alternative' => v_alternative(v_string($profile, 'alternative', 'alternative', false)),
+        'recovery' => v_recovery(v_string($profile, 'recovery', 'recovery')),
     ];
     if ($withPassword) {
         $result['password'] = v_password(v_string($profile, 'password', 'password'), 4);

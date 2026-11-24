@@ -26,14 +26,14 @@ async function logout() {
 }
 
 export default function passwordView(view) {
-    const oldPassword = passwordField('Текущий пароль или временный ПИН', {
+    const oldPassword = passwordField('Текущий пароль', {
         name: 'old_password',
         autocomplete: 'current-password',
     });
     const newPassword = passwordField('Новый пароль', {
         name: 'new_password',
         autocomplete: 'new-password',
-        hint: '4–72 символа',
+        hint: 'От 4 символов, у организатора — от 8',
     });
     const confirmPassword = passwordField('Новый пароль ещё раз', {
         name: 'new_password_confirm',
@@ -61,7 +61,7 @@ export default function passwordView(view) {
         clearFieldErrors(inputs);
 
         const errors = {
-            old_password: validateRequired(oldPassword.input.value, 'Введите текущий пароль или ПИН'),
+            old_password: validateRequired(oldPassword.input.value, 'Введите текущий пароль'),
             new_password: validatePassword(newPassword.input.value, 4),
         };
         if (oldPassword.input.value === newPassword.input.value && newPassword.input.value !== '') {
@@ -107,7 +107,7 @@ export default function passwordView(view) {
     });
 
     view.append(
-        pageHeader('Смена пароля', 'Введите временный ПИН, который выдал организатор, и придумайте новый пароль.'),
+        pageHeader('Смена пароля', 'Введите текущий пароль и придумайте новый.'),
         el('div', { class: 'card' }, [form]),
         el('p', { class: 'center' }, [
             el('button', { class: 'link-btn', type: 'button', text: 'Выйти', onClick: logout }),

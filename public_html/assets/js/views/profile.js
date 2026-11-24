@@ -87,6 +87,16 @@ export function buildProfileSection(role, options = {}) {
         children.push(password.field);
     }
 
+    if (options.withRecovery !== false) {
+        const recovery = passwordField('Кодовое слово', {
+            name: 'recovery',
+            autocomplete: 'off',
+            hint: 'Придумайте свой секрет (от 4 символов). Если забудете пароль, восстановите доступ по нему. Организатор его не видит.',
+        });
+        inputs.recovery = recovery.input;
+        children.push(recovery.field);
+    }
+
     return {
         section: el('div', { class: 'form-section' }, children),
         inputs,
@@ -106,6 +116,7 @@ export function readProfile(inputs) {
         link: read('link'),
         alternative: read('alternative'),
         password: read('password'),
+        recovery: read('recovery'),
     };
 }
 
