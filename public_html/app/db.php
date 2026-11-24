@@ -71,14 +71,39 @@ function db_ensure_columns(PDO $pdo): void
     if ($driver === 'mysql') {
         $exists = $pdo->query("SHOW COLUMNS FROM rooms LIKE 'owner_user_id'")->fetchColumn();
         if ($exists === false) {
-            $pdo->exec('ALTER TABLE rooms ADD COLUMN owner_user_id INT UNSIGNED NULL');
+            try {
+                $pdo->exec('ALTER TABLE rooms ADD COLUMN owner_user_id INT UNSIGNED NULL');
+            } catch (PDOException $e) {
+                // Параллельный запрос мог добавить колонку первым — тогда это не ошибка.
+                if ($pdo->query("SHOW COLUMNS FROM rooms LIKE 'owner_user_id'")->fetchColumn() === false) {
+                    throw $e;
+                }
+            }
         }
+        // Комнаты до обновления: владельцем считаем первого участника — именно
+        // он создаётся вместе с комнатой, поэтому единый пароль снова работает.
+        $pdo->exec('UPDATE rooms SET owner_user_id = (SELECT MIN(u.id) FROM users u WHERE u.room_id = rooms.id) WHERE owner_user_id IS NULL');
         return;
     }
     $columns = $pdo->query('PRAGMA table_info(rooms)')->fetchAll(PDO::FETCH_COLUMN, 1);
     if (!in_array('owner_user_id', $columns, true)) {
-        $pdo->exec('ALTER TABLE rooms ADD COLUMN owner_user_id INTEGER');
+        try {
+            $pdo->exec('ALTER TABLE rooms ADD COLUMN owner_user_id INTEGER');
+        } catch (PDOException $e) {
+            // Параллельный запрос мог добавить колонку первым — тогда это не ошибка.
+            $now = $pdo->query('PRAGMA table_info(rooms)')->fetchAll(PDO::FETCH_COLUMN, 1);
+            if (!in_array('owner_user_id', $now, true)) {
+                throw $e;
+            }
+        }
     }
+    // Комнаты до обновления: владельцем считаем первого участника — именно он
+    // создаётся вместе с комнатой, поэтому единый пароль снова работает.
+    $pdo->exec(
+        'UPDATE rooms SET owner_user_id = (SELECT MIN(u.id) FROM users u WHERE u.room_id = rooms.id)
+         WHERE owner_user_id IS NULL
+           AND EXISTS (SELECT 1 FROM users u2 WHERE u2.room_id = rooms.id)'
+    );
 }
 
 function db_run_schema(PDO $pdo, string $file): void
