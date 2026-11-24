@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
   link TEXT NOT NULL DEFAULT '',
   alternative TEXT NOT NULL DEFAULT '',
   pass_hash TEXT NOT NULL,
+  recovery_hash TEXT,
   must_change_pass INTEGER NOT NULL DEFAULT 0,
   auth_ver INTEGER NOT NULL DEFAULT 1,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

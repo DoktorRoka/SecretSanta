@@ -5,6 +5,7 @@ import role from './views/role.js';
 import join from './views/join.js';
 import create from './views/create.js';
 import login from './views/login.js';
+import recover from './views/recover.js';
 import cabinet from './views/cabinet.js';
 import password from './views/password.js';
 import admin from './views/admin.js';
@@ -16,6 +17,7 @@ const routes = [
     { path: '/join', view: join, allowLocked: false },
     { path: '/create', view: create, allowLocked: false },
     { path: '/login', view: login, allowLocked: false },
+    { path: '/recover', view: recover, allowLocked: false },
     { path: '/cabinet', view: cabinet, allowLocked: false },
     { path: '/password', view: password, allowLocked: true },
     { path: '/admin', view: admin, allowLocked: false },
