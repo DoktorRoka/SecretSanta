@@ -9,6 +9,8 @@ Mobile-first веб-приложение для обмена подарками:
 ```
 public_html/                  корень сайта (www/<домен>/)
 ├─ index.html                 единственная страница, hash-роутинг
+├─ manifest.webmanifest       PWA-манифест (standalone, иконки, тема)
+├─ sw.js                      service worker офлайн-оболочки
 ├─ .htaccess                  HTTPS, заголовки безопасности, запрет служебных файлов
 ├─ config.example.php         шаблон конфига
 ├─ config.php                 рабочий конфиг (не в репозитории)
@@ -18,7 +20,7 @@ public_html/                  корень сайта (www/<домен>/)
 │  ├─ js/ main.js router.js api.js ui.js icons.js help.js authors.js winter-scene.js validators.js
 │  │  └─ views/ home.js role.js join.js create.js login.js recover.js
 │  │            cabinet.js password.js admin.js super.js profile.js
-│  └─ img/favicon.svg
+│  └─ img/favicon.svg  icon-192.png  icon-512.png  icon-maskable-512.png  apple-touch-icon.png
 ├─ api/                       тонкие JSON-эндпоинты
 │  ├─ session.php  room_check.php  room_create.php  register.php
 │  ├─ login.php  logout.php  me.php  profile_update.php  password_change.php
@@ -143,6 +145,7 @@ php -r "echo password_hash('ВАШ_ПАРОЛЬ', PASSWORD_DEFAULT), PHP_EOL;"
 18. Кодовое слово (recovery) наследует длину пароля участника — 4–72 байта. Хранится только как `password_hash(...)` в `users.recovery_hash` и никогда не отдаётся в ответах API. У участников из БД, созданной до обновления, кодовое слово пустое (NULL): они не могут восстановить пароль самостоятельно. Организатор может удалить такого участника (пока комната `open`), после чего участник регистрируется заново и задаёт кодовое слово; для новых установок это неактуально.
 19. Механика `must_change_pass` сохранена, но новых значений `1` больше никто не выставляет (организаторского сброса нет). Флаг остаётся только для записей, где он был выставлен ранее, и продолжает перенаправлять на экран `#/password`.
 20. Создание комнаты и присоединение по коду разбиты на три шага с индикатором-степпером: **Комната** → **Анкета** → **Подарок**. Анкета собирается по частям (кто вы / что подарить / как входить), но отправляется однократно: создание — один вызов `POST /api/room_create.php` на последнем шаге, присоединение — `POST /api/room_check.php` на первом и `POST /api/register.php` на последнем. Поля не пересоздаются между шагами, поэтому введённое сохраняется при возврате назад, а серверная ошибка по полю возвращает на шаг с этим полем.
+21. Сайт — устанавливаемое PWA: `manifest.webmanifest` (`display: standalone`, `start_url: /#/home`, `theme_color: #0E1A2B`, иконки 192/512 и maskable 512) и `sw.js` — service worker офлайн-оболочки. Стратегия кэша: онлайн всегда сеть (файлы свежие, устаревшее не отдаётся), офлайн — ответ из кэша; при установке в кэш кладётся оболочка (`index.html`, CSS, JS-модули, иконки); `/api/*` не перехватывается. `.htaccess` отдаёт `.webmanifest` как `application/manifest+json`, а CSP дополнена `manifest-src 'self'` и `worker-src 'self'` (иначе `default-src 'none'` блокирует манифест и воркер). Иконки — PNG, сгенерированы из той же печати, что и `favicon.svg`.
 
 ## Проверки безопасности
 

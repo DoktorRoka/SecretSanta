@@ -135,7 +135,7 @@ foreach ($required as $extension) {
     }
 }
 
-header('Content-Security-Policy: default-src \'none\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:; connect-src \'self\'; base-uri \'none\'; form-action \'self\'; frame-ancestors \'none\'');
+header('Content-Security-Policy: default-src \'none\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:; connect-src \'self\'; manifest-src \'self\'; worker-src \'self\'; base-uri \'none\'; form-action \'self\'; frame-ancestors \'none\'');
 header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('Referrer-Policy: no-referrer');
